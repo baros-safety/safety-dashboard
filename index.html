@@ -113,15 +113,16 @@
   .donut-val{margin-left:auto;font-weight:700;font-size:0.68rem;font-family:'JetBrains Mono',monospace;}
 
   /* 3단 MID ROW */
-  .mid-row-grid{display:grid;grid-template-columns:300px 1fr 300px;gap:1rem;margin-bottom:1.2rem;align-items:start;}
-  @media(max-width:1200px){.mid-row-grid{grid-template-columns:1fr 1fr;}}
-  @media(max-width:800px){.mid-row-grid{grid-template-columns:1fr;}}
+  .mid-row-grid{display:grid;grid-template-columns:280px 1fr 280px;gap:0.9rem;margin-bottom:1.2rem;align-items:stretch;}
+  @media(max-width:1300px){.mid-row-grid{grid-template-columns:260px 1fr 260px;}}
+  @media(max-width:1000px){.mid-row-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:700px){.mid-row-grid{grid-template-columns:1fr;}}
 
   /* 경영방침 패널 */
   .policy-panel{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
   .panel-title-bar{display:flex;align-items:center;justify-content:space-between;padding:0.7rem 0.9rem;border-bottom:1px solid var(--border);background:var(--surface);}
   .panel-title{font-size:0.8rem;font-weight:700;display:flex;align-items:center;gap:0.4rem;}
-  .policy-img-area{flex:1;min-height:240px;position:relative;display:flex;align-items:center;justify-content:center;background:var(--surface);cursor:pointer;overflow:hidden;}
+  .policy-img-area{flex:1;min-height:200px;position:relative;display:flex;align-items:center;justify-content:center;background:var(--surface);cursor:pointer;overflow:hidden;}
   .policy-img-area:hover .policy-zoom-hint{opacity:1;}
   .policy-zoom-hint{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);color:white;font-size:0.65rem;text-align:center;padding:0.3rem;opacity:0;transition:opacity 0.2s;}
   .policy-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.4rem;padding:1.5rem;text-align:center;}
@@ -263,6 +264,43 @@
   .event-title{font-size:0.75rem;font-weight:600;margin-bottom:0.15rem;}
   .event-sub{font-size:0.65rem;color:var(--text-dim);}
   .matrix-cell{padding:0.4rem;text-align:center;border-radius:4px;font-size:0.65rem;font-weight:600;}
+
+  /* ── 새 조직도 ── */
+  .org-full-wrap{display:grid;grid-template-columns:1fr 280px;gap:1.5rem;align-items:start;}
+  @media(max-width:1000px){.org-full-wrap{grid-template-columns:1fr;}}
+
+  .org-tree-side{display:flex;flex-direction:column;align-items:center;}
+  .org-tree-level{display:flex;justify-content:center;gap:1.2rem;width:100%;}
+  .org-v-connector{width:2px;height:22px;background:linear-gradient(to bottom,rgba(14,165,233,0.5),rgba(30,58,95,0.8));margin:0 auto;flex-shrink:0;}
+  .org-branch-h-wrap{width:55%;display:flex;justify-content:center;margin:0 auto;}
+  .org-branch-h{width:100%;height:2px;background:var(--border);}
+
+  .org-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.7rem 0.9rem;text-align:center;transition:all 0.2s;min-width:150px;}
+  .org-box:hover{box-shadow:0 4px 18px rgba(14,165,233,0.18);transform:translateY(-2px);}
+  .org-box-ceo{border-color:rgba(56,189,248,0.5);background:linear-gradient(135deg,rgba(14,165,233,0.14),rgba(14,165,233,0.03));min-width:200px;}
+  .org-box-l2{min-width:180px;}
+  .org-box-l3{min-width:150px;max-width:185px;}
+  .org-box-icon{font-size:1.4rem;margin-bottom:0.2rem;}
+  .org-box-name{font-size:1rem;font-weight:800;letter-spacing:-0.01em;margin-bottom:0.1rem;}
+  .org-box-name-sm{font-size:0.78rem;font-weight:700;margin-bottom:0.1rem;}
+  .org-box-role{font-size:0.63rem;font-weight:700;margin-bottom:0.2rem;}
+  .org-box-sub{font-size:0.6rem;color:var(--text-dim);}
+
+  .org-box-supervisor-wrap{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;}
+  .org-sup-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.65rem;justify-content:center;}
+  .org-sup-names{display:flex;flex-wrap:wrap;gap:0.4rem;justify-content:center;}
+  .org-sup-name-chip{background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.75rem;font-size:0.84rem;font-weight:700;color:var(--text);transition:all 0.18s;cursor:default;}
+  .org-sup-name-chip:hover{background:rgba(14,165,233,0.1);border-color:var(--accent);color:var(--accent2);}
+
+  .org-duties-side{display:flex;flex-direction:column;gap:0.6rem;}
+  .org-duty-panel-title{font-size:0.78rem;font-weight:700;color:var(--text-mid);margin-bottom:0.2rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border);}
+  .org-duty-item-card{background:var(--surface3);border-radius:8px;padding:0.6rem 0.75rem;border-left:3px solid var(--border);}
+  .org-duty-item-head{display:flex;align-items:center;gap:0.35rem;margin-bottom:0.35rem;}
+  .org-duty-name{font-size:0.73rem;font-weight:700;}
+  .org-duty-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.15rem;}
+  .org-duty-list li{font-size:0.62rem;color:var(--text-dim);line-height:1.55;padding-left:0.8rem;position:relative;}
+  .org-duty-list li::before{content:"•";position:absolute;left:0;color:var(--text-dim);}
+
 </style>
 </head>
 <body>
@@ -326,13 +364,13 @@
   <!-- 1. 관리센터 수 -->
   <div class="kpi-card blue">
     <div class="kpi-head">
-      <div><div class="kpi-label">관리 센터 수</div><div class="kpi-basis">전국 물류·시공</div></div>
-      <span style="font-size:1.4rem;opacity:0.35;">🏭</span>
+      <div><div class="kpi-label">관리 센터 수</div><div class="kpi-basis">전국 물류·유통 거점</div></div>
+      <span style="font-size:1.5rem;opacity:0.4;">🗺️</span>
     </div>
     <div class="kpi-main"><span class="kpi-value" style="color:var(--accent2);">20</span><span class="kpi-value-sub">개소</span></div>
     <div class="kpi-sub-area">
-      <div class="kpi-stat-row"><span class="kpi-stat-label">물류센터</span><span class="kpi-stat-val" style="color:var(--accent2);">16개</span></div>
-      <div class="kpi-stat-row"><span class="kpi-stat-label">직영점/고객센터</span><span class="kpi-stat-val" style="color:var(--text-mid);">4개</span></div>
+      <div class="kpi-stat-row"><span class="kpi-stat-label">관리 인원 (총계)</span><span class="kpi-stat-val" style="color:var(--accent2);">376명</span></div>
+      <div class="kpi-stat-row"><span class="kpi-stat-label">관할 지역</span><span class="kpi-stat-val" style="color:var(--text-mid);">전국 10개 권역</span></div>
     </div>
     <div class="kpi-prog-area">
       <div class="prog-bar" style="height:5px;"><div class="prog-fill prog-green" style="width:100%"></div></div>
@@ -342,7 +380,7 @@
   <!-- 2. 총 인원 (도넛) -->
   <div class="kpi-card blue">
     <div class="kpi-head">
-      <div><div class="kpi-label">총 인원</div><div class="kpi-basis" id="empBasis">26년 2월 기준</div></div>
+      <div><div class="kpi-label">총 인원</div><div class="kpi-basis" id="empBasis">26.03.11 기준</div></div>
       <span style="font-size:1.4rem;opacity:0.35;">👥</span>
     </div>
     <div class="kpi-main"><span class="kpi-value" id="empTotal" style="color:var(--accent2);">376</span><span class="kpi-value-sub">명</span></div>
@@ -364,10 +402,10 @@
   <!-- 3. 재해 목표/실적 -->
   <div class="kpi-card green">
     <div class="kpi-head">
-      <div><div class="kpi-label">재해 목표 / 실적</div><div class="kpi-basis">26년 2월 기준</div></div>
+      <div><div class="kpi-label">재해 목표 / 실적</div><div class="kpi-basis" id="accBasis">26.03.11 기준</div></div>
       <span style="font-size:1.4rem;opacity:0.35;">⚠️</span>
     </div>
-    <div class="kpi-main"><span class="kpi-value" id="accCurrent" style="color:var(--green);">3</span><span class="kpi-value-sub">건 / 목표 <span id="accTarget">8</span>건</span></div>
+    <div class="kpi-main"><span class="kpi-value" id="accCurrent" style="color:var(--green);">3</span><span class="kpi-value-sub"> / 목표 <span id="accTarget">8</span>건</span></div>
     <div class="kpi-sub-area">
       <div class="kpi-stat-row"><span class="kpi-stat-label">소진율 (주의)</span><span class="kpi-stat-val" id="accRate" style="color:var(--yellow);">37.5%</span></div>
       <div class="kpi-stat-row"><span class="kpi-stat-label">잔여 허용</span><span class="kpi-stat-val" id="accRemain" style="color:var(--green);">5건</span></div>
@@ -384,7 +422,7 @@
       <div><div class="kpi-label">유해위험요인 발굴·개선</div><div class="kpi-basis">연간 목표 300건</div></div>
       <span style="font-size:1.4rem;opacity:0.35;">🔍</span>
     </div>
-    <div class="kpi-main"><span class="kpi-value" id="hazardCurrent" style="color:var(--purple);">0</span><span class="kpi-value-sub">건 / 300건</span></div>
+    <div class="kpi-main"><span class="kpi-value" id="hazardCurrent" style="color:var(--purple);">0</span><span class="kpi-value-sub"> / 300건</span></div>
     <div class="kpi-sub-area">
       <div class="kpi-stat-row"><span class="kpi-stat-label">달성률</span><span class="kpi-stat-val" id="hazardRate" style="color:var(--purple);">0%</span></div>
       <div class="kpi-stat-row"><span class="kpi-stat-label">도급협의체 집계</span><span class="kpi-stat-val" style="color:var(--text-dim);">월별 누적</span></div>
@@ -556,161 +594,147 @@
   </div>
   <div class="panel-body">
     <div class="org-chart-container">
-    <div class="org-chart-inner">
+<div class="org-full-wrap">
 
-      <!-- L1: 총괄책임자 -->
-      <div style="display:flex;justify-content:center;width:100%;">
-        <div class="org-node lv1">
-          <div class="org-n-emoji">👑</div>
-          <div class="org-n-name">박성진</div>
-          <div class="org-n-role" style="color:var(--accent2);">안전보건관리 총괄책임자 · 대표이사</div>
-          <div class="org-n-duties">
-            <div class="org-duty">• 안전보건 경영책임 및 자원 지원</div>
-            <div class="org-duty">• 중대재해처벌법 의무이행 총괄</div>
-            <div class="org-duty">• 안전보건 목표·방침 최종 승인</div>
-          </div>
+  <!-- ① 좌: 계층형 조직도 -->
+  <div class="org-tree-side">
+
+    <!-- L1: 대표이사 -->
+    <div class="org-tree-level">
+      <div class="org-box org-box-ceo">
+        <div class="org-box-icon">👑</div>
+        <div class="org-box-name">박성진</div>
+        <div class="org-box-role" style="color:var(--accent2);">대표이사</div>
+        <div class="org-box-sub">안전보건관리 총괄책임자</div>
+      </div>
+    </div>
+
+    <div class="org-v-connector"></div>
+
+    <!-- L2: 안전보건팀장 -->
+    <div class="org-tree-level">
+      <div class="org-box org-box-l2" style="border-color:rgba(16,185,129,0.45);">
+        <div class="org-box-icon">🛡️</div>
+        <div class="org-box-name">조신혜</div>
+        <div class="org-box-role" style="color:var(--green);">안전보건팀장</div>
+      </div>
+    </div>
+
+    <div class="org-v-connector"></div>
+    <!-- L2~L3 가로 분기선 -->
+    <div class="org-branch-h-wrap">
+      <div class="org-branch-h"></div>
+    </div>
+
+    <!-- L3: 안전관리자 + 보건관리자 -->
+    <div class="org-tree-level" style="gap:2rem;">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="org-v-connector"></div>
+        <div class="org-box org-box-l3" style="border-color:rgba(245,158,11,0.45);">
+          <div class="org-box-icon" style="font-size:1rem;">⚙️</div>
+          <div class="org-box-name-sm">대한산업안전협회</div>
+          <div class="org-box-role" style="color:var(--yellow);">안전관리자(대행)</div>
+          <div class="org-box-sub">담당: 김성환</div>
         </div>
       </div>
-
-      <div class="org-v-line"></div>
-      <!-- L1→L2 가로선 -->
-      <div style="position:relative;width:68%;display:flex;justify-content:center;">
-        <div class="org-h-line" style="width:100%;"></div>
-      </div>
-
-      <!-- L2: 팀장 + 안전관리자 + 보건관리자 -->
-      <div class="org-level-row" style="gap:1rem;align-items:flex-start;">
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="org-v-line"></div>
-          <div class="org-node lv2-green">
-            <div class="org-n-emoji">🛡️</div>
-            <div class="org-n-name">조신혜</div>
-            <div class="org-n-role" style="color:var(--green);">안전보건팀장</div>
-            <div class="org-n-duties">
-              <div class="org-duty">• 전사 안전보건 기획·추진 총괄</div>
-              <div class="org-duty">• 안전·보건 담당자 조율·성과관리</div>
-              <div class="org-duty">• 안전보건 관리운영 계획 수립</div>
-            </div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="org-v-line"></div>
-          <div class="org-node lv2-yellow">
-            <div class="org-n-emoji">⚙️</div>
-            <div class="org-n-name-small">대한산업안전협회</div>
-            <div class="org-n-role" style="color:var(--yellow);">안전관리자 (대행)</div>
-            <div class="org-n-duties">
-              <div class="org-duty">• 점검, 교육, 사고예방, 개선관리</div>
-              <div class="org-duty">• 위험성평가 보좌·조언</div>
-              <div class="org-duty">• 산재 원인조사·재발방지 지도</div>
-            </div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="org-v-line"></div>
-          <div class="org-node lv2-purple">
-            <div class="org-n-emoji">🏥</div>
-            <div class="org-n-name-small">대한산업보건협회</div>
-            <div class="org-n-role" style="color:var(--purple);">보건관리자 (대행)</div>
-            <div class="org-n-duties">
-              <div class="org-duty">• 건강관리, 유소견자 관리, 보건조치</div>
-              <div class="org-duty">• 건강검진 결과분석·사후관리</div>
-              <div class="org-duty">• 근골격계·직무스트레스 예방</div>
-            </div>
-          </div>
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="org-v-connector"></div>
+        <div class="org-box org-box-l3" style="border-color:rgba(139,92,246,0.45);">
+          <div class="org-box-icon" style="font-size:1rem;">🏥</div>
+          <div class="org-box-name-sm">대한산업보건협회</div>
+          <div class="org-box-role" style="color:var(--purple);">보건관리자(대행)</div>
+          <div class="org-box-sub">담당: 박해리</div>
         </div>
       </div>
+    </div>
 
-      <div class="org-v-line"></div>
-      <div style="position:relative;width:52%;display:flex;justify-content:center;">
-        <div class="org-h-line" style="width:100%;"></div>
-      </div>
+    <div class="org-v-connector"></div>
 
-      <!-- L3: 담당자 2인 -->
-      <div class="org-level-row" style="gap:1rem;align-items:flex-start;">
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="org-v-line"></div>
-          <div class="org-node lv3" style="border-color:rgba(14,165,233,0.35);">
-            <div class="org-n-emoji" style="font-size:1.1rem;">👤</div>
-            <div class="org-n-name">김성환</div>
-            <div class="org-n-role" style="color:var(--accent2);">안전담당자</div>
-            <div class="org-n-duties">
-              <div class="org-duty">• 전사 안전보건 실무 이행</div>
-              <div class="org-duty">• 안전보건 교육 계획·실시</div>
-              <div class="org-duty">• 사고·위험 즉시 보고·처리</div>
-            </div>
-          </div>
+    <!-- L4: 관리감독자 박스 -->
+    <div class="org-tree-level" style="width:100%;">
+      <div class="org-box-supervisor-wrap">
+        <div class="org-sup-header">
+          <span>👷</span>
+          <span style="font-size:0.82rem;font-weight:700;color:var(--accent2);">관리감독자</span>
+          <span style="font-size:0.62rem;color:var(--text-dim);">현장 실무 · 근로자 직접 지휘감독</span>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:center;">
-          <div class="org-v-line"></div>
-          <div class="org-node lv3" style="border-color:rgba(139,92,246,0.35);">
-            <div class="org-n-emoji" style="font-size:1.1rem;">👤</div>
-            <div class="org-n-name">박해리</div>
-            <div class="org-n-role" style="color:var(--purple);">보건담당자</div>
-            <div class="org-n-duties">
-              <div class="org-duty">• 건강검진 계획·실시·사후관리</div>
-              <div class="org-duty">• 근골격계 유해요인 관리</div>
-              <div class="org-duty">• 보건 기록 관리 및 조치</div>
-            </div>
-          </div>
+        <div class="org-sup-names">
+          <div class="org-sup-name-chip">강현민</div>
+          <div class="org-sup-name-chip">김기호</div>
+          <div class="org-sup-name-chip">이범준</div>
+          <div class="org-sup-name-chip">이상율</div>
+          <div class="org-sup-name-chip">이희용</div>
+          <div class="org-sup-name-chip">손으뜸</div>
+          <div class="org-sup-name-chip">강효훈</div>
+          <div class="org-sup-name-chip">이문승</div>
+          <div class="org-sup-name-chip">박진우</div>
+          <div class="org-sup-name-chip">오준성</div>
+          <div class="org-sup-name-chip">강태훈</div>
+          <div class="org-sup-name-chip">전정원</div>
         </div>
       </div>
+    </div>
 
-      <div class="org-v-line"></div>
-      <div style="position:relative;width:85%;display:flex;justify-content:center;">
-        <div class="org-h-line" style="width:100%;"></div>
-      </div>
+  </div><!-- /org-tree-side -->
 
-      <!-- L4: 관리감독자 -->
-      <div style="width:100%;margin-top:0;">
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;width:100%;">
-          <div style="text-align:center;margin-bottom:0.55rem;">
-            <div style="font-size:0.78rem;font-weight:700;color:var(--accent2);">👷 관리감독자</div>
-            <div style="font-size:0.62rem;color:var(--text-dim);margin-top:0.2rem;">현장점검 · 작업전 안전확인(TBM) · 위험요인 개선조치 · 근로자 직접 지휘감독</div>
-          </div>
-          <div class="org-supervisor-grid">
-            <div class="org-sup-card">강현민</div>
-            <div class="org-sup-card">김기호</div>
-            <div class="org-sup-card">이범준</div>
-            <div class="org-sup-card">이상율</div>
-            <div class="org-sup-card">이희용</div>
-            <div class="org-sup-card">손으뜸</div>
-            <div class="org-sup-card">강효훈</div>
-            <div class="org-sup-card">이문승</div>
-            <div class="org-sup-card">박진우</div>
-            <div class="org-sup-card">오준성</div>
-            <div class="org-sup-card">강태훈</div>
-            <div class="org-sup-card">전정원</div>
-          </div>
-        </div>
-      </div>
+  <!-- ② 우: 역할별 책임업무 패널 -->
+  <div class="org-duties-side">
+    <div class="org-duty-panel-title">📋 역할별 책임업무</div>
 
-      <!-- 역할 요약 패널 -->
-      <div class="org-role-summary">
-        <div class="org-role-card">
-          <div class="org-role-title"><span>👑</span><span style="color:var(--accent2);">대표이사 / 총괄책임자</span></div>
-          <div class="org-role-duties">안전보건 경영책임 및 자원 지원<br>중대재해처벌법 의무이행 총괄<br>정책·목표 최종 승인권자</div>
-        </div>
-        <div class="org-role-card">
-          <div class="org-role-title"><span>🛡️</span><span style="color:var(--green);">안전보건팀장</span></div>
-          <div class="org-role-duties">전사 안전보건 운영 총괄<br>점검체계·예산·계획 관리<br>법정 의무 이행 총괄 조율</div>
-        </div>
-        <div class="org-role-card">
-          <div class="org-role-title"><span>⚙️</span><span style="color:var(--yellow);">안전관리자</span></div>
-          <div class="org-role-duties">점검, 교육, 사고예방, 개선관리<br>위험성평가 보좌 및 조언<br>관리감독자 활동 지도·지원</div>
-        </div>
-        <div class="org-role-card">
-          <div class="org-role-title"><span>🏥</span><span style="color:var(--purple);">보건관리자</span></div>
-          <div class="org-role-duties">건강관리, 유소견자 조치, 보건상담<br>건강검진 사후관리<br>직업병 예방 및 보건교육</div>
-        </div>
-        <div class="org-role-card">
-          <div class="org-role-title"><span>👷</span><span style="color:var(--accent2);">관리감독자</span></div>
-          <div class="org-role-duties">현장점검 · TBM(작업전안전확인)<br>위험요인 즉시 조치·보고<br>근로자 직접 지휘·감독</div>
-        </div>
-      </div>
+    <div class="org-duty-item-card" style="border-left-color:var(--accent2);">
+      <div class="org-duty-item-head"><span>👑</span><span class="org-duty-name" style="color:var(--accent2);">대표이사 / 총괄책임자</span></div>
+      <ul class="org-duty-list">
+        <li>안전보건 경영책임 및 예산·자원 지원</li>
+        <li>중대재해처벌법 의무이행 총괄</li>
+        <li>안전보건 목표·방침 최종 승인</li>
+        <li>전사 안전보건 운영체계 구축 책임</li>
+      </ul>
+    </div>
 
-    </div><!-- /org-chart-inner -->
-    </div><!-- /org-chart-container -->
+    <div class="org-duty-item-card" style="border-left-color:var(--green);">
+      <div class="org-duty-item-head"><span>🛡️</span><span class="org-duty-name" style="color:var(--green);">안전보건팀장</span></div>
+      <ul class="org-duty-list">
+        <li>전사 안전보건 기획·추진 총괄</li>
+        <li>점검체계·예산·연간계획 관리</li>
+        <li>안전·보건담당자 조율·성과관리</li>
+        <li>법정 의무 이행 총괄 조율</li>
+      </ul>
+    </div>
+
+    <div class="org-duty-item-card" style="border-left-color:var(--yellow);">
+      <div class="org-duty-item-head"><span>⚙️</span><span class="org-duty-name" style="color:var(--yellow);">안전관리자</span></div>
+      <ul class="org-duty-list">
+        <li>점검, 교육, 사고예방, 개선관리</li>
+        <li>위험성평가 보좌 및 기술지원</li>
+        <li>산재 원인조사·재발방지 지도</li>
+        <li>관리감독자 활동 지도·지원</li>
+      </ul>
+    </div>
+
+    <div class="org-duty-item-card" style="border-left-color:var(--purple);">
+      <div class="org-duty-item-head"><span>🏥</span><span class="org-duty-name" style="color:var(--purple);">보건관리자</span></div>
+      <ul class="org-duty-list">
+        <li>건강관리, 유소견자 조치, 보건상담</li>
+        <li>건강검진 사후관리 및 결과분석</li>
+        <li>근골격계·직무스트레스 예방</li>
+        <li>직업병 예방 및 보건교육</li>
+      </ul>
+    </div>
+
+    <div class="org-duty-item-card" style="border-left-color:var(--orange);">
+      <div class="org-duty-item-head"><span>👷</span><span class="org-duty-name" style="color:var(--orange);">관리감독자</span></div>
+      <ul class="org-duty-list">
+        <li>현장점검 및 TBM(작업전 안전확인)</li>
+        <li>위험요인 즉시 조치 및 보고</li>
+        <li>근로자 직접 지휘·감독</li>
+        <li>작업허가 및 안전수칙 준수 확인</li>
+      </ul>
+    </div>
+
+  </div><!-- /org-duties-side -->
+
+</div><!-- /org-full-wrap -->
+</div><!-- /org-chart-container -->
 
     <!-- 위험요인 실적 목록 -->
     <div style="margin-top:1.2rem;border-top:1px solid var(--border);padding-top:1rem;">
@@ -1708,22 +1732,36 @@ function loadData(){
 function saveData(){try{localStorage.setItem('letus_v3',JSON.stringify(data));}catch(e){}}
 var data=loadData();
 
-// ── Google Drive URL 변환 ──
+// ── Google Drive URL 변환 (다중 방식 지원) ──
+function extractGDriveId(url){
+  if(!url) return null;
+  // /file/d/{id}/ 패턴
+  var m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if(m1) return m1[1];
+  // ?id= 또는 &id= 패턴
+  var m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m2) return m2[1];
+  return null;
+}
 function convertGDriveUrl(url){
   if(!url) return url;
-  // 패턴: /file/d/{id}/view 또는 /file/d/{id}/edit
-  var m = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  if(m){
-    var fileId = m[1];
-    // thumbnail API — CORS 제약 없이 이미지 렌더 가능
-    return 'https://drive.google.com/thumbnail?id='+fileId+'&sz=w1200';
+  var id = extractGDriveId(url);
+  if(id){
+    // uc?export=view 방식 — 직접 이미지 렌더 (가장 안정적)
+    return 'https://lh3.googleusercontent.com/d/' + id;
   }
-  // /open?id= 패턴
-  var m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if(m2){
-    return 'https://drive.google.com/thumbnail?id='+m2[1]+'&sz=w1200';
-  }
-  return url; // 일반 URL 그대로 반환
+  return url;
+}
+function convertGDriveUrlAlt(url){
+  // 대체 URL (첫번째 실패시)
+  var id = extractGDriveId(url);
+  if(id) return 'https://drive.google.com/thumbnail?id='+id+'&sz=w1200';
+  return url;
+}
+function convertGDriveUrlAlt2(url){
+  var id = extractGDriveId(url);
+  if(id) return 'https://drive.google.com/uc?export=view&id='+id;
+  return url;
 }
 
 // ── 도넛 ──
@@ -1758,7 +1796,7 @@ function updateAccKPI(){
   document.getElementById('accTarget').textContent=t;
   document.getElementById('accCurrent').textContent=c;
   document.getElementById('accRate').textContent=rate+'%';
-  document.getElementById('accRemain').textContent=(t-c)+'건';
+  var remain=t-c;document.getElementById('accRemain').textContent=remain>0?remain+'건':'목표 도달';
   var bar=document.getElementById('accBar');
   bar.style.width=Math.min(rate,100)+'%';
   var col=rate<50?'prog-green':rate<80?'prog-yellow':'prog-red';
@@ -1820,14 +1858,30 @@ function updatePolicyImage(){
   var loading=document.getElementById('policyLoading');
   var cap=document.getElementById('policyCaptionBar');
   if(data.policy.url){
-    var renderUrl=convertGDriveUrl(data.policy.url);
     loading.style.display='block';
     img.style.display='none';
     ph.style.display='none';
-    img.src=renderUrl;
-    img.onload=function(){loading.style.display='none';img.style.display='block';};
-    img.onerror=function(){loading.style.display='none';ph.style.display='flex';
-      ph.innerHTML='<div style="font-size:1.5rem;">❌</div><div style="font-size:0.72rem;color:var(--red);margin-top:0.3rem;">이미지를 불러올 수 없습니다</div><div style="font-size:0.62rem;color:var(--text-dim);margin-top:0.2rem;">Google Drive 공유 권한을 확인하세요</div><div style="font-size:0.62rem;color:var(--accent);margin-top:0.5rem;cursor:pointer;" onclick="openModal('modalPolicy')">🔗 다시 입력</div>';};
+    var tried=0;
+    var urls=[
+      convertGDriveUrl(data.policy.url),
+      convertGDriveUrlAlt(data.policy.url),
+      convertGDriveUrlAlt2(data.policy.url)
+    ];
+    function tryLoad(idx){
+      if(idx>=urls.length){
+        loading.style.display='none';
+        ph.style.display='flex';
+        ph.innerHTML='<div style="font-size:1.5rem;margin-bottom:0.3rem;">❌</div>'+
+          '<div style="font-size:0.75rem;color:var(--red);font-weight:600;">이미지를 불러올 수 없습니다</div>'+
+          '<div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.3rem;line-height:1.6;">Google Drive 파일 공유 설정을<br>「링크가 있는 모든 사용자」로 변경하세요</div>'+
+          '<button onclick="openModal('modalPolicy')" style="margin-top:0.6rem;background:rgba(14,165,233,0.12);border:1px solid rgba(14,165,233,0.3);color:var(--accent2);border-radius:5px;padding:0.3rem 0.7rem;font-size:0.65rem;cursor:pointer;">🔗 다시 입력</button>';
+        return;
+      }
+      img.src=urls[idx];
+      img.onload=function(){loading.style.display='none';img.style.display='block';};
+      img.onerror=function(){tryLoad(idx+1);};
+    }
+    tryLoad(0);
   } else {
     img.style.display='none';
     loading.style.display='none';
@@ -1845,11 +1899,21 @@ function closePolicyLightbox(){document.getElementById('policyLightbox').style.d
 function previewPolicy(){
   var url=document.getElementById('inPolicyUrl').value.trim();
   if(!url){alert('URL을 입력하세요.');return;}
-  var renderUrl=convertGDriveUrl(url);
   var pw=document.getElementById('policyPreviewWrap');
   var pi=document.getElementById('policyPreviewImg');
   pw.style.display='block';
-  pi.src=renderUrl;
+  pi.style.opacity='0.5';
+  var urls=[convertGDriveUrl(url),convertGDriveUrlAlt(url),convertGDriveUrlAlt2(url)];
+  function tryP(idx){
+    if(idx>=urls.length){
+      pi.parentElement.innerHTML='<div style="padding:1rem;font-size:0.72rem;color:var(--red);text-align:center;">❌ 이미지를 불러올 수 없습니다.<br><span style="color:var(--text-dim);">Google Drive 공유 권한을 「링크가 있는 모든 사용자」로 변경하세요.</span></div>';
+      return;
+    }
+    pi.src=urls[idx];
+    pi.onload=function(){pi.style.opacity='1';};
+    pi.onerror=function(){tryP(idx+1);};
+  }
+  tryP(0);
 }
 
 // ── 저장 ──
@@ -1857,11 +1921,20 @@ function saveEmp(){
   data.emp.baros=parseInt(document.getElementById('inBaros').value)||0;
   data.emp.contractor=parseInt(document.getElementById('inContractor').value)||0;
   data.emp.construction=parseInt(document.getElementById('inConstruction').value)||0;
+  // 기준일 업데이트
+  var today=new Date();
+  var d=today.getFullYear().toString().slice(2)+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getDate()).padStart(2,'0');
+  data.empUpdated=d;
+  var eb=document.getElementById('empBasis');if(eb)eb.textContent=d+' 기준';
   saveData();drawDonut();closeModal('modalEmp');
 }
 function saveAcc(){
   data.acc.target=parseInt(document.getElementById('inAccTarget').value)||8;
   data.acc.current=parseInt(document.getElementById('inAccCurrent').value)||0;
+  var today=new Date();
+  var d=today.getFullYear().toString().slice(2)+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+String(today.getDate()).padStart(2,'0');
+  data.accUpdated=d;
+  var ab=document.getElementById('accBasis');if(ab)ab.textContent=d+' 기준';
   saveData();updateAccKPI();closeModal('modalAcc');
 }
 function saveHazard(){
