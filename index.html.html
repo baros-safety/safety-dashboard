@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>바로스 안전보건 통합 관리 대시보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --surface3: #1e2d45;
+    --border: #1e3a5f;
+    --accent: #0ea5e9;
+    --accent2: #38bdf8;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --orange: #f97316;
+    --purple: #8b5cf6;
+    --text: #e2e8f0;
+    --text-dim: #64748b;
+    --text-mid: #94a3b8;
+    --glow: rgba(14, 165, 233, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === HEADER === */
+  .header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0f1f35 50%, #0a0e1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-badge {
+    background: linear-gradient(135deg, var(--accent), #0369a1);
+    color: white;
+    font-weight: 900;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .header-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .header-title span { color: var(--accent2); }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .header-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* === NAV TABS === */
+  .nav-tabs {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 0.85rem 1.4rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-tab:hover { color: var(--text-mid); }
+  .nav-tab.active {
+    color: var(--accent2);
+    border-bottom-color: var(--accent2);
+  }
+
+  .nav-badge {
+    background: var(--red);
+    color: white;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+
+  /* === MAIN === */
+  .main { padding: 1.5rem 2rem; max-width: 1600px; margin: 0 auto; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* === KPI CARDS === */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .kpi-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .kpi-card.blue::before { background: var(--accent); }
+  .kpi-card.green::before { background: var(--green); }
+  .kpi-card.yellow::before { background: var(--yellow); }
+  .kpi-card.red::before { background: var(--red); }
+  .kpi-card.purple::before { background: var(--purple); }
+  .kpi-card.orange::before { background: var(--orange); }
+
+  .kpi-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .kpi-value {
+    font-size: 2rem;
+    font-weight: 900;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .kpi-card.blue .kpi-value { color: var(--accent2); }
+  .kpi-card.green .kpi-value { color: var(--green); }
+  .kpi-card.yellow .kpi-value { color: var(--yellow); }
+  .kpi-card.red .kpi-value { color: var(--red); }
+  .kpi-card.purple .kpi-value { color: var(--purple); }
+  .kpi-card.orange .kpi-value { color: var(--orange); }
+
+  .kpi-sub {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+  }
+
+  .kpi-icon {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.2rem;
+    opacity: 0.08;
+  }
+
+  /* === SECTION HEADERS === */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .section-action {
+    font-size: 0.75rem;
+    color: var(--accent);
+    cursor: pointer;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: all 0.2s;
+  }
+
+  .section-action:hover { background: var(--glow); border-color: var(--accent); }
+
+  /* === GRID LAYOUTS === */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+  .grid-3-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+  .grid-full { margin-bottom: 1.5rem; }
+
+  @media (max-width: 1100px) {
+    .grid-2, .grid-3, .grid-3-1 { grid-template-columns: 1fr; }
+  }
+
+  /* === PANEL === */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .panel-head {
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+  }
+
+  .panel-head-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .panel-body { padding: 1rem 1.2rem; }
+
+  /* === CENTER TABLE === */
+  .center-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+
+  .center-table th {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    background: var(--surface2);
+  }
+
+  .center-table td {
+    padding: 0.65rem 0.8rem;
+    border-bottom: 1px solid rgba(30,58,95,0.4);
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .center-table tr:last-child td { border-bottom: none; }
+  .center-table tr:hover td { background: rgba(14,165,233,0.05); }
+
+  .center-name { font-weight: 600; color: var(--accent2); }
+
+  /* === STATUS BADGES === */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.67rem;
+    font-weight: 700;
+  }
+
+  .badge-ok { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-warn { background: rgba(245,158,11,0.15); color: var(--yellow); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-danger { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-pending { background: rgba(148,163,184,0.1); color: var(--text-dim); border: 1px solid rgba(148,163,184,0.2); }
+
+  /* === PROGRESS BAR === */
+  .prog-bar {
+    background: var(--surface3);
+    border-radius: 3px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 0.25rem;
+  }
+
+  .prog-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease;
+  }
+
+  .prog-green { background: var(--green); }
+  .prog-yellow { background: var(--yellow); }
+  .prog-red { background: var(--red); }
+  .prog-blue { background: var(--accent); }
+
+  /* === DOCUMENT LIST === */
+  .doc-category {
+    margin-bottom: 1rem;
+  }
+
+  .doc-cat-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .doc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.25rem;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .doc-item:hover { background: var(--surface3); }
+
+  .doc-item-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+  }
+
+  .doc-check {
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    flex-shrink: 0;
+  }
+
+  .doc-check.done { background: var(--green); border-color: var(--green); color: white; }
+  .doc-check.warn { background: var(--yellow); border-color: var(--yellow); color: white; }
+  .doc-check.none { border-color: var(--text-dim); }
+
+  .doc-name { font-size: 0.78rem; color: var(--text); }
+  .doc-meta { font-size: 0.68rem; color: var(--text-dim); margin-top: 0.15rem; }
+  .doc-right { display: flex; align-items: center; gap: 0.5rem; }
+  .doc-date { font-size: 0.68rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+
+  /* === CHECKLIST === */
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(30,58,95,0.4);
+  }
+
+  .checklist-item:last-child { border-bottom: none; }
+
+  .check-circle {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .check-circle.ok { border-color: var(--green); background: rgba(16,185,129,0.1); color: var(--green); }
+  .check-circle.warn { border-color: var(--yellow); background: rgba(245,158,11,0.1); color: var(--yellow); }
+  .check-circle.no { border-color: var(--text-dim); color: transparent; }
+  .check-circle.danger { border-color: var(--red); background: rgba(239,68,68,0.1); color: var(--red); }
+
+  .checklist-text { flex: 1; }
+  .checklist-title { font-size: 0.8rem; font-weight: 500; color: var(--text); }
+  .checklist-desc { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+  /* === ALERT ITEMS === */
+  .alert-item {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 7px;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid;
+  }
+
+  .alert-item.danger { background: rgba(239,68,68,0.08); border-color: var(--red); }
+  .alert-item.warn { background: rgba(245,158,11,0.08); border-color: var(--yellow); }
+  .alert-item.info { background: rgba(14,165,233,0.08); border-color: var(--accent); }
+
+  .alert-icon { font-size: 1rem; flex-shrink: 0; padding-top: 0.1rem; }
+  .alert-title { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+  .alert-detail { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+  /* === CALENDAR STYLE EVENTS === */
+  .event-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(30,58,95,0.4);
+  }
+
+  .event-item:last-child { border-bottom: none; }
+
+  .event-date-box {
+    background: var(--surface3);
+    border-radius: 6px;
+    width: 40px; height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .event-day { font-size: 1rem; font-weight: 900; color: var(--accent2); line-height: 1; }
+  .event-month { font-size: 0.55rem; color: var(--text-dim); font-weight: 600; }
+
+  .event-info { flex: 1; }
+  .event-title { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+  .event-sub { font-size: 0.68rem; color: var(--text-dim); margin-top: 0.15rem; }
+  .event-type { font-size: 0.65rem; }
+
+  /* === STAT ROW === */
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(30,58,95,0.4);
+  }
+
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { font-size: 0.75rem; color: var(--text-dim); flex: 1; }
+  .stat-val { font-size: 0.82rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .stat-bar-wrap { width: 80px; }
+
+  /* === MINI DONUT (CSS) === */
+  .donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 0.8rem 0;
+  }
+
+  .donut-chart {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .donut-legend { flex: 1; }
+  .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; font-size: 0.73rem; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* === TAG === */
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+
+  .tag-blue { background: rgba(14,165,233,0.15); color: var(--accent2); }
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--green); }
+  .tag-yellow { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .tag-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tag-purple { background: rgba(139,92,246,0.15); color: var(--purple); }
+
+  /* === RISK TABLE === */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+    margin-bottom: 0.5rem;
+  }
+
+  .risk-cell {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    cursor: default;
+  }
+
+  .risk-header { background: var(--surface3); color: var(--text-dim); font-size: 0.55rem; aspect-ratio: auto; padding: 0.3rem; }
+  .risk-1 { background: rgba(16,185,129,0.2); color: var(--green); }
+  .risk-2 { background: rgba(16,185,129,0.35); color: var(--green); }
+  .risk-3 { background: rgba(245,158,11,0.2); color: var(--yellow); }
+  .risk-4 { background: rgba(245,158,11,0.35); color: var(--yellow); }
+  .risk-5 { background: rgba(239,68,68,0.2); color: var(--red); }
+  .risk-6 { background: rgba(239,68,68,0.35); color: var(--red); }
+
+  /* === EMPTY STATE === */
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+  }
+
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; opacity: 0.4; }
+
+  /* === SCROLLBAR === */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* === FOOTER INFO === */
+  .info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(30,58,95,0.3);
+    font-size: 0.75rem;
+  }
+
+  .info-row:last-child { border-bottom: none; }
+  .info-key { color: var(--text-dim); }
+  .info-val { color: var(--text); font-weight: 500; }
+
+  .dot-ok { color: var(--green); }
+  .dot-warn { color: var(--yellow); }
+  .dot-danger { color: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo-badge">BAROS</div>
+    <div class="header-title">안전보건 통합관리 <span>대시보드</span></div>
+  </div>
+  <div class="header-right">
+    <div class="live-indicator">
+      <div class="live-dot"></div>
+      LIVE
+    </div>
+    <div class="header-date" id="currentDate"></div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav-tabs">
+  <div class="nav-tab active" onclick="showPage('overview')">📊 전체 현황</div>
+  <div class="nav-tab" onclick="showPage('centers')">🏭 센터별 관리 <span class="nav-badge">3</span></div>
+  <div class="nav-tab" onclick="showPage('documents')">📋 문서 관리</div>
+  <div class="nav-tab" onclick="showPage('education')">🎓 교육 관리</div>
+  <div class="nav-tab" onclick="showPage('inspection')">🔍 점검·감사</div>
+  <div class="nav-tab" onclick="showPage('incident')">⚠️ 사고·아차사고</div>
+  <div class="nav-tab" onclick="showPage('risk')">🎯 위험성 평가</div>
+  <div class="nav-tab" onclick="showPage('health')">🏥 건강관리</div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ====== PAGE: 전체 현황 ====== -->
+  <div class="page active" id="page-overview">
+
+    <!-- KPI -->
+    <div class="kpi-grid">
+      <div class="kpi-card blue">
+        <div class="kpi-label">관리 센터 수</div>
+        <div class="kpi-value">20</div>
+        <div class="kpi-sub">전국 물류센터</div>
+        <div class="kpi-icon">🏭</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">법정 교육 이수율</div>
+        <div class="kpi-value">--%</div>
+        <div class="kpi-sub">데이터 입력 필요</div>
+        <div class="kpi-icon">🎓</div>
+      </div>
+      <div class="kpi-card yellow">
+        <div class="kpi-label">미결 개선조치</div>
+        <div class="kpi-value">--건</div>
+        <div class="kpi-sub">데이터 입력 필요</div>
+        <div class="kpi-icon">🔧</div>
+      </div>
+      <div class="kpi-card red">
+        <div class="kpi-label">이번 달 재해</div>
+        <div class="kpi-value">--건</div>
+        <div class="kpi-sub">데이터 입력 필요</div>
+        <div class="kpi-icon">⚠️</div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-label">위험성 평가 완료</div>
+        <div class="kpi-value">--곳</div>
+        <div class="kpi-sub">/ 20개 센터</div>
+        <div class="kpi-icon">🎯</div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-label">만료 임박 서류</div>
+        <div class="kpi-value">--건</div>
+        <div class="kpi-sub">30일 이내</div>
+        <div class="kpi-icon">📄</div>
+      </div>
+    </div>
+
+    <!-- 알림 + 일정 -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-title">🚨 긴급 알림 / 조치 필요</div>
+          <span class="tag tag-red">샘플 데이터</span>
+        </div>
+        <div class="panel-body">
+          <div class="alert-item danger">
+            <div class="alert-icon">🔴</div>
+            <div>
+              <div class="alert-title">안전관리자 선임 신고 기한 초과</div>
+              <div class="alert-detail">○○센터 · 법정 기한 경과 — 즉시 조치 필요</div>
+            </div>
+          </div>
+          <div class="alert-item warn">
+            <div class="alert-icon">🟡</div>
+            <div>
+              <div class="alert-title">소방설비 정기점검 만료 D-7</div>
+              <div class="alert-detail">△△센터 · 2025.03.17 만료</div>
+            </div>
+          </div>
+          <div class="alert-item warn">
+            <div class="alert-icon">🟡</div>
+            <div>
+              <div class="alert-title">위험성 평가 갱신 대상 (연간)</div>
+              <div class="alert-detail">3개 센터 · 갱신 주기 도래</div>
+            </div>
+          </div>
+          <div class="alert-item info">
+            <div class="alert-icon">🔵</div>
+            <div>
+              <div class="alert-title">산업안전보건위원회 정기회의 예정</div>
+              <div class="alert-detail">전사 · 2025.03.25 예정</div>
+            </div>
+          </div>
+          <div class="empty-state" style="padding: 0.8rem; font-size: 0.72rem; color: var(--text-dim); text-align: center; margin-top: 0.5rem;">
+            ※ 실제 데이터 입력 후 자동 알림 표시
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-title">📅 이번 달 주요 일정</div>
+          <span class="tag tag-blue">3월</span>
+        </div>
+        <div class="panel-body">
+          <div class="event-item">
+            <div class="event-date-box">
+              <div class="event-day">10</div>
+              <div class="event-month">MAR</div>
+            </div>
+            <div class="event-info">
+              <div class="event-title">월간 안전보건 점검</div>
+              <div class="event-sub">전 센터 자체점검 실시</div>
+            </div>
+            <span class="tag tag-blue">정기</span>
+          </div>
+          <div class="event-item">
+            <div class="event-date-box">
+              <div class="event-day">15</div>
+              <div class="event-month">MAR</div>
+            </div>
+            <div class="event-info">
+              <div class="event-title">법정 안전교육 (정기)</div>
+              <div class="event-sub">물류센터 근로자 / 분기 교육</div>
+            </div>
+            <span class="tag tag-green">교육</span>
+          </div>
+          <div class="event-item">
+            <div class="event-date-box">
+              <div class="event-day">20</div>
+              <div class="event-month">MAR</div>
+            </div>
+            <div class="event-info">
+              <div class="event-title">지게차 특별안전교육</div>
+              <div class="event-sub">지게차 운전원 대상</div>
+            </div>
+            <span class="tag tag-yellow">특별</span>
+          </div>
+          <div class="event-item">
+            <div class="event-date-box">
+              <div class="event-day">25</div>
+              <div class="event-month">MAR</div>
+            </div>
+            <div class="event-info">
+              <div class="event-title">산업안전보건위원회</div>
+              <div class="event-sub">분기 정기회의</div>
+            </div>
+            <span class="tag tag-purple">회의</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 센터 요약 -->
+    <div class="grid-full">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-head-title">🏭 전체 센터 안전보건 현황 요약</div>
+          <span class="tag tag-blue">20개 센터 · 샘플</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="center-table">
+            <thead>
+              <tr>
+                <th>센터명</th>
+                <th>지역</th>
+                <th>안전관리자</th>
+                <th>위험성평가</th>
+                <th>법정교육</th>
+                <th>자체점검</th>
+                <th>미결조치</th>
+                <th>최근사고</th>
+                <th>종합등급</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="center-name">1센터 (서울)</td><td>서울</td>
+                <td><span class="badge badge-ok">✓ 선임</span></td>
+                <td><span class="badge badge-ok">완료</span></td>
+                <td>--</td><td>--</td><td>--건</td><td>--</td>
+                <td><span class="badge badge-pending">미입력</span></td>
+              </tr>
+              <tr>
+                <td class="center-name">2센터 (경기북)</td><td>경기</td>
+                <td><span class="badge badge-ok">✓ 선임</span></td>
+                <td><span class="badge badge-warn">갱신필요</span></td>
+                <td>--</td><td>--</td><td>--건</td><td>--</td>
+                <td><span class="badge badge-pending">미입력</span></td>
+              </tr>
+              <tr>
+                <td class="center-name">3센터 (경기남)</td><td>경기</td>
+                <td><span class="badge badge-danger">미선임</span></td>
+                <td><span class="badge badge-ok">완료</span></td>
+                <td>--</td><td>--</td><td>--건</td><td>--</td>
+                <td><span class="badge badge-danger">조치필요</span></td>
+              </tr>
+              <tr>
+                <td class="center-name">4~20센터</td><td>전국</td>
+                <td colspan="6" style="color: var(--text-dim); font-size: 0.72rem; text-align: center;">── 데이터 입력 후 자동 표시 ──</td>
+                <td><span class="badge badge-pending">미입력</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- ====== PAGE: 센터별 관리 ====== -->
+  <div class="page" id="page-centers">
+    <div class="section-header">
+      <div class="section-title">센터별 상세 관리 현황</div>
+    </div>
+
+    <div class="kpi-grid" style="grid-template-columns: repeat(auto-fill, minmax(160px,1fr));">
+      <div class="kpi-card green"><div class="kpi-label">안전관리자 선임 완료</div><div class="kpi-value">--</div><div class="kpi-sub">/ 20개 센터</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">위험성평가 완료</div><div class="kpi-value">--</div><div class="kpi-sub">/ 20개 센터</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">자체점검 실시</div><div class="kpi-value">--</div><div class="kpi-sub">이번 달</div></div>
+      <div class="kpi-card red"><div class="kpi-label">미결 개선조치</div><div class="kpi-value">--건</div><div class="kpi-sub">전체 합계</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📍 센터별 안전관리자 현황</div></div>
+        <div class="panel-body">
+          <div class="checklist-item">
+            <div class="check-circle ok">✓</div>
+            <div class="checklist-text">
+              <div class="checklist-title">안전관리자 선임 신고</div>
+              <div class="checklist-desc">산업안전보건법 제17조 · 근로자 50인 이상 선임 의무</div>
+            </div>
+            <span class="badge badge-pending">센터별 확인</span>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle warn">!</div>
+            <div class="checklist-text">
+              <div class="checklist-title">보건관리자 / 보건관리 위탁</div>
+              <div class="checklist-desc">근로자 수에 따른 선임 또는 위탁 여부</div>
+            </div>
+            <span class="badge badge-pending">센터별 확인</span>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">산업안전보건위원회 구성·운영</div>
+              <div class="checklist-desc">상시근로자 100인 이상 / 분기 1회 이상</div>
+            </div>
+            <span class="badge badge-pending">해당센터 확인</span>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">안전보건 총괄책임자 지정</div>
+              <div class="checklist-desc">도급사업 시 의무 지정</div>
+            </div>
+            <span class="badge badge-pending">센터별 확인</span>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">관리감독자 교육 이수</div>
+              <div class="checklist-desc">연 16시간 이상</div>
+            </div>
+            <span class="badge badge-pending">센터별 확인</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">🗺️ 센터별 개선조치 현황</div></div>
+        <div class="panel-body">
+          <div style="margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.75rem;">
+              <span style="color: var(--text-dim);">완료율</span>
+              <span style="color: var(--green); font-weight: 700;">--%</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill prog-green" style="width: 0%"></div></div>
+          </div>
+          <table class="center-table">
+            <thead>
+              <tr><th>센터</th><th>발생</th><th>완료</th><th>미결</th><th>완료율</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="center-name">1센터</td><td>--</td><td>--</td><td>--</td>
+                <td><div class="prog-bar" style="width:60px"><div class="prog-fill prog-blue" style="width:0%"></div></div></td>
+              </tr>
+              <tr>
+                <td class="center-name">2센터</td><td>--</td><td>--</td><td>--</td>
+                <td><div class="prog-bar" style="width:60px"><div class="prog-fill prog-blue" style="width:0%"></div></div></td>
+              </tr>
+              <tr>
+                <td colspan="5" style="text-align:center; color: var(--text-dim); font-size: 0.72rem; padding: 0.8rem;">데이터 입력 후 자동 표시</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div><!-- /centers -->
+
+
+  <!-- ====== PAGE: 문서 관리 ====== -->
+  <div class="page" id="page-documents">
+    <div class="section-header">
+      <div class="section-title">안전보건 문서 관리 체계</div>
+      <div class="section-action">+ 문서 등록</div>
+    </div>
+
+    <div class="grid-2">
+      <!-- 1. 방침/규정 -->
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📌 1단계 · 방침 및 규정</div></div>
+        <div class="panel-body">
+          <div class="doc-category">
+            <div class="doc-cat-title">🏛️ 최상위 문서</div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">안전보건경영방침</div>
+                  <div class="doc-meta">대표이사 서명 · 매년 검토</div>
+                </div>
+              </div>
+              <div class="doc-right">
+                <span class="doc-date">미등록</span>
+                <span class="badge badge-pending">등록필요</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">안전보건관리규정</div>
+                  <div class="doc-meta">산안법 제25조 · 상시 100인 이상 작성 의무</div>
+                </div>
+              </div>
+              <div class="doc-right">
+                <span class="doc-date">미등록</span>
+                <span class="badge badge-pending">등록필요</span>
+              </div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">안전보건목표 및 세부추진계획</div>
+                  <div class="doc-meta">연간 · 매년 수립</div>
+                </div>
+              </div>
+              <div class="doc-right">
+                <span class="doc-date">미등록</span>
+                <span class="badge badge-pending">등록필요</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="doc-category">
+            <div class="doc-cat-title">📂 조직·체계 문서</div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">안전보건조직도</div>
+                  <div class="doc-meta">안전보건 관리체계 조직도</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">안전관리자·보건관리자 업무분장</div>
+                  <div class="doc-meta">직무기술서 포함</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">도급·용역업체 안전보건 관리계획</div>
+                  <div class="doc-meta">협력업체 안전관리 절차</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 매뉴얼/절차서 -->
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📚 2단계 · 매뉴얼 / 절차서</div></div>
+        <div class="panel-body">
+          <div class="doc-category">
+            <div class="doc-cat-title">⚙️ 운영 매뉴얼</div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">안전보건관리 매뉴얼 (총괄)</div>
+                  <div class="doc-meta">안전보건경영시스템 전반</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">위험성평가 실시 절차서</div>
+                  <div class="doc-meta">연간·수시 평가 방법 기술</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">안전교육 운영 절차서</div>
+                  <div class="doc-meta">교육 계획·실시·기록 절차</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">작업허가(PTW) 절차서</div>
+                  <div class="doc-meta">고위험 작업 사전 허가 체계</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">사고·아차사고 보고 절차서</div>
+                  <div class="doc-meta">발생→보고→조사→재발방지</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">비상대응 절차서 (ERP)</div>
+                  <div class="doc-meta">화재·폭발·누출 비상대응</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div>
+                  <div class="doc-name">건강관리 및 직업병 예방 절차서</div>
+                  <div class="doc-meta">특수건강검진·작업환경측정</div>
+                </div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- 3. 지침서/작업표준 -->
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📝 3단계 · 지침서 / 작업표준</div></div>
+        <div class="panel-body">
+          <div class="doc-category">
+            <div class="doc-cat-title">🚛 물류 특화 작업지침 (필수)</div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">지게차 안전작업지침</div><div class="doc-meta">지게차 운전·보행자 분리 기준</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">컨베이어 안전작업지침</div><div class="doc-meta">컨베이어 운전·정비 안전기준</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">고소작업(사다리/비계) 안전지침</div><div class="doc-meta">2m 이상 고소 작업 기준</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">중량물 취급 안전지침</div><div class="doc-meta">인력 운반·기계 운반 기준</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">화학물질(위험물) 취급 지침</div><div class="doc-meta">MSDS 관리·보호구 기준</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">밀폐공간 작업지침</div><div class="doc-meta">출입전 측정·감시인 배치</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">야간·단독 작업 안전지침</div><div class="doc-meta">심야물류 특성 반영</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 법정 기록물 -->
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">🗂️ 4단계 · 법정 기록물 관리</div></div>
+        <div class="panel-body">
+          <div class="doc-category">
+            <div class="doc-cat-title">📊 법정 보존 기록 (보존기간 명시)</div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">안전관리자 선임 신고서</div><div class="doc-meta">보존: 2년 · 고용노동부 신고</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">안전보건교육 실시기록부</div><div class="doc-meta">보존: 3년 · 교육일지·서명부</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">위험성평가 결과표</div><div class="doc-meta">보존: 3년 · 연간·수시 평가</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">산업재해 조사표 / 산재 기록</div><div class="doc-meta">보존: 3년 · 발생 즉시 기록</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">작업환경측정 결과보고서</div><div class="doc-meta">보존: 5년 (발암물질 30년)</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">건강검진 결과표</div><div class="doc-meta">보존: 5년 (특수 30년)</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">정기점검 체크리스트</div><div class="doc-meta">보존: 3년 · 월간 점검 기록</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+            <div class="doc-item">
+              <div class="doc-item-left">
+                <div class="doc-check none"></div>
+                <div><div class="doc-name">산업안전보건위원회 회의록</div><div class="doc-meta">보존: 3년 · 분기별</div></div>
+              </div>
+              <div class="doc-right"><span class="badge badge-pending">미등록</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /documents -->
+
+
+  <!-- ====== PAGE: 교육 관리 ====== -->
+  <div class="page" id="page-education">
+    <div class="section-header">
+      <div class="section-title">법정 안전보건 교육 관리</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card blue"><div class="kpi-label">전체 이수율</div><div class="kpi-value">--%</div><div class="kpi-sub">전 센터 합계</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">미이수 인원</div><div class="kpi-value">--명</div><div class="kpi-sub">당월 기준</div></div>
+      <div class="kpi-card green"><div class="kpi-label">이번 달 교육</div><div class="kpi-value">--건</div><div class="kpi-sub">완료 기준</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">미실시 센터</div><div class="kpi-value">--곳</div><div class="kpi-sub">당월 기준</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📋 법정 교육 종류 및 기준</div></div>
+        <div class="panel-body">
+          <table class="center-table">
+            <thead>
+              <tr><th>교육 종류</th><th>대상</th><th>주기/시간</th><th>상태</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>정기 안전보건교육</strong></td>
+                <td>일반 근로자</td>
+                <td>매분기 6h</td>
+                <td><span class="badge badge-pending">미확인</span></td>
+              </tr>
+              <tr>
+                <td><strong>관리감독자 교육</strong></td>
+                <td>관리감독자</td>
+                <td>연 16h</td>
+                <td><span class="badge badge-pending">미확인</span></td>
+              </tr>
+              <tr>
+                <td><strong>신규채용자 교육</strong></td>
+                <td>신입직원</td>
+                <td>채용 즉시 8h</td>
+                <td><span class="badge badge-pending">미확인</span></td>
+              </tr>
+              <tr>
+                <td><strong>특별 안전교육</strong></td>
+                <td>지게차 등 특정작업</td>
+                <td>작업 전 16h</td>
+                <td><span class="badge badge-pending">미확인</span></td>
+              </tr>
+              <tr>
+                <td><strong>작업변경 교육</strong></td>
+                <td>배치변경자</td>
+                <td>변경 즉시 2h</td>
+                <td><span class="badge badge-pending">미확인</span></td>
+              </tr>
+              <tr>
+                <td><strong>건설업 기초안전보건</strong></td>
+                <td>시공 작업자</td>
+                <td>4h (최초 1회)</td>
+                <td><span class="badge badge-pending">미확인</span></td>
+              </tr>
+              <tr>
+                <td><strong>안전보건관리책임자 교육</strong></td>
+                <td>관리책임자</td>
+                <td>선임 후 6개월 내</td>
+                <td><span class="badge badge-pending">미확인</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📅 센터별 교육 이수 현황</div></div>
+        <div class="panel-body">
+          <div class="stat-row">
+            <div class="stat-label">1센터 (서울)</div>
+            <div class="stat-bar-wrap">
+              <div class="prog-bar"><div class="prog-fill prog-green" style="width:0%"></div></div>
+            </div>
+            <div class="stat-val" style="color: var(--text-dim);">--%</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">2센터 (경기북)</div>
+            <div class="stat-bar-wrap">
+              <div class="prog-bar"><div class="prog-fill prog-green" style="width:0%"></div></div>
+            </div>
+            <div class="stat-val" style="color: var(--text-dim);">--%</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">3센터 (경기남)</div>
+            <div class="stat-bar-wrap">
+              <div class="prog-bar"><div class="prog-fill prog-yellow" style="width:0%"></div></div>
+            </div>
+            <div class="stat-val" style="color: var(--text-dim);">--%</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">4~20센터</div>
+            <div style="flex: 1; color: var(--text-dim); font-size: 0.72rem; text-align: center;">── 데이터 입력 후 표시 ──</div>
+          </div>
+          <div class="empty-state" style="padding:0.8rem">
+            ※ 센터별 근로자 수와 교육 실적 입력 시 자동 계산
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /education -->
+
+
+  <!-- ====== PAGE: 점검·감사 ====== -->
+  <div class="page" id="page-inspection">
+    <div class="section-header"><div class="section-title">안전보건 점검 및 감사</div></div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card blue"><div class="kpi-label">월간 자체점검 완료</div><div class="kpi-value">--곳</div><div class="kpi-sub">/ 20개 센터</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">지적사항</div><div class="kpi-value">--건</div><div class="kpi-sub">이번 달</div></div>
+      <div class="kpi-card green"><div class="kpi-label">개선완료율</div><div class="kpi-value">--%</div><div class="kpi-sub">누적 기준</div></div>
+      <div class="kpi-card purple"><div class="kpi-label">외부 감사 예정</div><div class="kpi-value">--건</div><div class="kpi-sub">3개월 이내</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">✅ 점검 종류별 체크리스트</div></div>
+        <div class="panel-body">
+          <div class="doc-cat-title" style="margin-bottom: 0.8rem;">🔄 정기 점검 항목</div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">월간 안전점검 (자체)</div>
+              <div class="checklist-desc">전 센터 월 1회 · 관리감독자 주관</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">분기 안전보건 점검 (본사)</div>
+              <div class="checklist-desc">안전관리자 순회 · 연 4회 이상</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">설비·기계 정기검사</div>
+              <div class="checklist-desc">지게차·크레인·컨베이어 등 법정 검사</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">소방설비 정기점검</div>
+              <div class="checklist-desc">소방청 기준 · 반기 1회</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">전기설비 안전점검</div>
+              <div class="checklist-desc">정기 전기안전점검 · 연 1회</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">연간 종합 안전감사</div>
+              <div class="checklist-desc">내부감사 또는 외부 전문기관 위탁</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📊 개선조치 추적 관리</div></div>
+        <div class="panel-body">
+          <table class="center-table">
+            <thead>
+              <tr><th>발생일</th><th>센터</th><th>지적내용</th><th>완료기한</th><th>상태</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="5" style="text-align:center; color: var(--text-dim); font-size: 0.72rem; padding: 1.5rem;">
+                  <div class="empty-icon">📋</div>
+                  점검 실시 후 지적사항 자동 등록
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div><!-- /inspection -->
+
+
+  <!-- ====== PAGE: 사고·아차사고 ====== -->
+  <div class="page" id="page-incident">
+    <div class="section-header"><div class="section-title">사고 및 아차사고 관리</div></div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card red"><div class="kpi-label">올해 산업재해</div><div class="kpi-value">--건</div><div class="kpi-sub">산재 신청 기준</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">아차사고</div><div class="kpi-value">--건</div><div class="kpi-sub">올해 누적</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">재해율</div><div class="kpi-value">--%</div><div class="kpi-sub">업종 평균 대비</div></div>
+      <div class="kpi-card green"><div class="kpi-label">무재해 일수</div><div class="kpi-value">--일</div><div class="kpi-sub">마지막 재해 이후</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">⚠️ 사고 유형별 현황</div></div>
+        <div class="panel-body">
+          <div class="stat-row">
+            <div class="stat-label">넘어짐 (전도)</div>
+            <div class="stat-bar-wrap"><div class="prog-bar"><div class="prog-fill prog-red" style="width:0%"></div></div></div>
+            <div class="stat-val" style="color: var(--text-dim);">--건</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">끼임 (협착)</div>
+            <div class="stat-bar-wrap"><div class="prog-bar"><div class="prog-fill prog-red" style="width:0%"></div></div></div>
+            <div class="stat-val" style="color: var(--text-dim);">--건</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">떨어짐 (추락)</div>
+            <div class="stat-bar-wrap"><div class="prog-bar"><div class="prog-fill prog-red" style="width:0%"></div></div></div>
+            <div class="stat-val" style="color: var(--text-dim);">--건</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">맞음 (낙하·비래)</div>
+            <div class="stat-bar-wrap"><div class="prog-bar"><div class="prog-fill prog-yellow" style="width:0%"></div></div></div>
+            <div class="stat-val" style="color: var(--text-dim);">--건</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">운반기계 (지게차)</div>
+            <div class="stat-bar-wrap"><div class="prog-bar"><div class="prog-fill prog-yellow" style="width:0%"></div></div></div>
+            <div class="stat-val" style="color: var(--text-dim);">--건</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">과부하·근골격계</div>
+            <div class="stat-bar-wrap"><div class="prog-bar"><div class="prog-fill prog-yellow" style="width:0%"></div></div></div>
+            <div class="stat-val" style="color: var(--text-dim);">--건</div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-label">기타</div>
+            <div class="stat-bar-wrap"><div class="prog-bar"><div class="prog-fill prog-blue" style="width:0%"></div></div></div>
+            <div class="stat-val" style="color: var(--text-dim);">--건</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📋 사고 이력 관리</div></div>
+        <div class="panel-body">
+          <table class="center-table">
+            <thead>
+              <tr><th>발생일</th><th>센터</th><th>재해유형</th><th>상해정도</th><th>처리상태</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="5" style="text-align:center; color: var(--text-dim); padding: 1.5rem; font-size: 0.72rem;">
+                  사고 발생 시 입력 · 자동 통계 반영
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(16,185,129,0.08); border-radius: 6px; border: 1px solid rgba(16,185,129,0.2);">
+            <div style="font-size: 0.75rem; color: var(--green); font-weight: 700; margin-bottom: 0.4rem;">🏆 무재해 목표 관리</div>
+            <div style="font-size: 0.72rem; color: var(--text-dim);">현재 무재해 -- 일 · 목표: -- 일 달성</div>
+            <div class="prog-bar" style="margin-top: 0.5rem;"><div class="prog-fill prog-green" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /incident -->
+
+
+  <!-- ====== PAGE: 위험성 평가 ====== -->
+  <div class="page" id="page-risk">
+    <div class="section-header"><div class="section-title">위험성 평가 관리 (산안법 제36조)</div></div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card blue"><div class="kpi-label">연간 평가 완료</div><div class="kpi-value">--곳</div><div class="kpi-sub">/ 20개 센터</div></div>
+      <div class="kpi-card red"><div class="kpi-label">허용불가 위험</div><div class="kpi-value">--건</div><div class="kpi-sub">즉시 조치 필요</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">수시 평가 대상</div><div class="kpi-value">--건</div><div class="kpi-sub">변경·사고 후</div></div>
+      <div class="kpi-card green"><div class="kpi-label">개선 완료율</div><div class="kpi-value">--%</div><div class="kpi-sub">위험 감소 조치</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📊 위험성 매트릭스 (기준표)</div></div>
+        <div class="panel-body">
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.8rem;">가능성(빈도) × 심각성(강도) = 위험성 등급</div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.7rem; text-align: center;">
+              <thead>
+                <tr>
+                  <th style="padding: 0.4rem; background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border);">빈도↓ / 강도→</th>
+                  <th style="padding: 0.4rem; background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border);">경미 (1)</th>
+                  <th style="padding: 0.4rem; background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border);">보통 (2)</th>
+                  <th style="padding: 0.4rem; background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border);">중대 (3)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 0.4rem; background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); font-weight: 600;">빈번(3)</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(245,158,11,0.15); color: var(--yellow); font-weight: 700;">3 중간</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(239,68,68,0.15); color: var(--red); font-weight: 700;">6 높음</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(239,68,68,0.3); color: var(--red); font-weight: 700;">9 매우높음</td>
+                </tr>
+                <tr>
+                  <td style="padding: 0.4rem; background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); font-weight: 600;">가끔(2)</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(16,185,129,0.15); color: var(--green); font-weight: 700;">2 낮음</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(245,158,11,0.15); color: var(--yellow); font-weight: 700;">4 중간</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(239,68,68,0.15); color: var(--red); font-weight: 700;">6 높음</td>
+                </tr>
+                <tr>
+                  <td style="padding: 0.4rem; background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); font-weight: 600;">드물게(1)</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(16,185,129,0.1); color: var(--green); font-weight: 700;">1 매우낮음</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(16,185,129,0.15); color: var(--green); font-weight: 700;">2 낮음</td>
+                  <td style="padding: 0.5rem; border: 1px solid var(--border); background: rgba(245,158,11,0.15); color: var(--yellow); font-weight: 700;">3 중간</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top: 0.8rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <span class="badge badge-ok">1~2: 허용 가능</span>
+            <span class="badge badge-warn">3~4: 감소조치 필요</span>
+            <span class="badge badge-danger">6~9: 즉시 작업중지</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">🏭 센터별 위험성 평가 현황</div></div>
+        <div class="panel-body">
+          <table class="center-table">
+            <thead>
+              <tr><th>센터</th><th>연간평가</th><th>평가일</th><th>고위험건</th><th>조치율</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="center-name">1센터</td>
+                <td><span class="badge badge-pending">미실시</span></td>
+                <td style="color: var(--text-dim);">--</td><td>--</td>
+                <td><span class="badge badge-pending">--</span></td>
+              </tr>
+              <tr>
+                <td class="center-name">2센터</td>
+                <td><span class="badge badge-pending">미실시</span></td>
+                <td style="color: var(--text-dim);">--</td><td>--</td>
+                <td><span class="badge badge-pending">--</span></td>
+              </tr>
+              <tr>
+                <td colspan="5" style="text-align:center; color: var(--text-dim); font-size: 0.72rem; padding: 0.8rem;">
+                  3~20센터 · 데이터 입력 후 표시
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top: 1rem;">
+            <div class="doc-cat-title" style="margin-bottom: 0.5rem;">📋 물류센터 주요 위험 요인 (표준)</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+              <span class="tag tag-red">지게차 충돌</span>
+              <span class="tag tag-red">고소추락</span>
+              <span class="tag tag-yellow">컨베이어 끼임</span>
+              <span class="tag tag-yellow">중량물 전도</span>
+              <span class="tag tag-yellow">전기감전</span>
+              <span class="tag tag-blue">근골격계질환</span>
+              <span class="tag tag-blue">화재·폭발</span>
+              <span class="tag tag-blue">야간단독작업</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /risk -->
+
+
+  <!-- ====== PAGE: 건강관리 ====== -->
+  <div class="page" id="page-health">
+    <div class="section-header"><div class="section-title">근로자 건강관리</div></div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card blue"><div class="kpi-label">일반건강검진 수검률</div><div class="kpi-value">--%</div><div class="kpi-sub">연간 대상자 기준</div></div>
+      <div class="kpi-card purple"><div class="kpi-label">특수건강검진 수검률</div><div class="kpi-value">--%</div><div class="kpi-sub">유해인자 노출자</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">작업환경측정 대상</div><div class="kpi-value">--곳</div><div class="kpi-sub">반기 1회 측정</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">직업병 소견자</div><div class="kpi-value">--명</div><div class="kpi-sub">추적관리 대상</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">🏥 건강검진 관리 현황</div></div>
+        <div class="panel-body">
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">일반 건강검진</div>
+              <div class="checklist-desc">사무직 2년 1회 / 비사무직 연 1회 · 국민건강보험공단</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">특수 건강검진</div>
+              <div class="checklist-desc">소음·진동·중금속 등 유해인자 노출 근로자 · 반기 1회</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">배치전 건강검진</div>
+              <div class="checklist-desc">유해부서 배치 전 실시</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">근골격계 유해요인 조사</div>
+              <div class="checklist-desc">3년마다 · 물류 특성상 중점관리</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">작업환경측정</div>
+              <div class="checklist-desc">소음·분진 등 · 반기 1회 (대상 공정)</div>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-circle no"></div>
+            <div class="checklist-text">
+              <div class="checklist-title">뇌심혈관계 발병위험도 평가</div>
+              <div class="checklist-desc">야간작업 종사자 · 특수검진 연계</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div class="panel-head-title">📊 센터별 검진 현황</div></div>
+        <div class="panel-body">
+          <table class="center-table">
+            <thead>
+              <tr><th>센터</th><th>대상인원</th><th>수검완료</th><th>수검률</th><th>이상소견</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="center-name">1센터</td><td>--명</td><td>--명</td>
+                <td><span class="badge badge-pending">--%</span></td><td>--명</td>
+              </tr>
+              <tr>
+                <td class="center-name">2센터</td><td>--명</td><td>--명</td>
+                <td><span class="badge badge-pending">--%</span></td><td>--명</td>
+              </tr>
+              <tr>
+                <td colspan="5" style="text-align:center; color: var(--text-dim); font-size: 0.72rem; padding: 0.8rem;">데이터 입력 후 자동 표시</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(14,165,233,0.06); border-radius: 6px; border: 1px solid var(--border);">
+            <div style="font-size: 0.72rem; color: var(--accent2); font-weight: 700; margin-bottom: 0.3rem;">📌 물류 특화 건강관리 포인트</div>
+            <div style="font-size: 0.7rem; color: var(--text-dim); line-height: 1.6;">
+              • 야간작업자 특수검진 (수면장애·소화기계)<br>
+              • 중량물 취급 근골격계 집중관리<br>
+              • 소음 노출 청력검사 (물류장비 상시 가동)<br>
+              • 화학물질 취급자 특수검진
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /health -->
+
+</main>
+
+<script>
+  // 날짜 표시
+  const now = new Date();
+  document.getElementById('currentDate').textContent =
+    now.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+
+  // 탭 전환
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</body>
+</html>
