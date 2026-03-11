@@ -185,6 +185,48 @@
 
   .divider { height:1px; background:var(--border); margin:1rem 0; }
   .empty-note { text-align:center; padding:1rem; color:var(--text-dim); font-size:0.72rem; }
+
+  /* ORG CHART */
+  .org-node { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:0.7rem 0.9rem; text-align:center; min-width:150px; max-width:210px; transition:box-shadow 0.2s,transform 0.2s; cursor:default; }
+  .org-node:hover { box-shadow:0 4px 20px rgba(14,165,233,0.2); transform:translateY(-2px); }
+  .org-top { border-color:rgba(56,189,248,0.5); background:linear-gradient(135deg,rgba(14,165,233,0.15),rgba(14,165,233,0.05)); min-width:220px; }
+  .org-mgr { min-width:170px; max-width:210px; }
+  .org-staff { min-width:150px; max-width:190px; }
+  .org-icon { font-size:1.5rem; margin-bottom:0.3rem; }
+  .org-name { font-size:0.82rem; font-weight:700; margin-bottom:0.15rem; }
+  .org-pos { font-size:0.63rem; color:var(--accent2); font-weight:600; margin-bottom:0.4rem; }
+  .org-duties { font-size:0.6rem; color:var(--text-dim); line-height:1.6; text-align:left; border-top:1px solid var(--border); padding-top:0.4rem; margin-top:0.3rem; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:999; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal-box { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.5rem; width:min(480px,95vw); max-height:85vh; overflow-y:auto; }
+  .modal-title { font-size:0.95rem; font-weight:700; margin-bottom:1.2rem; color:var(--accent2); }
+  .modal-field { margin-bottom:0.9rem; }
+  .modal-label { font-size:0.73rem; color:var(--text-dim); font-weight:600; margin-bottom:0.3rem; display:block; }
+  .modal-input { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:0.5rem 0.7rem; font-size:0.8rem; font-family:'Noto Sans KR',sans-serif; }
+  .modal-input:focus { outline:none; border-color:var(--accent); }
+  .modal-select { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:0.5rem 0.7rem; font-size:0.8rem; }
+  .modal-btn-row { display:flex; gap:0.7rem; margin-top:1.2rem; }
+  .modal-btn { flex:1; padding:0.55rem; border-radius:7px; font-size:0.8rem; font-weight:700; cursor:pointer; border:none; }
+  .modal-btn.primary { background:var(--accent); color:white; }
+  .modal-btn.cancel { background:var(--surface3); color:var(--text-dim); }
+
+  /* CALENDAR */
+  .cal-cell { min-height:52px; background:var(--surface2); border-radius:4px; padding:0.25rem; cursor:pointer; transition:background 0.15s; }
+  .cal-cell:hover { background:var(--surface3); }
+  .cal-cell.today { background:rgba(14,165,233,0.15); border:1px solid rgba(14,165,233,0.4); }
+  .cal-cell.other-month { opacity:0.3; }
+  .cal-day { font-size:0.65rem; font-weight:700; margin-bottom:2px; }
+  .cal-evt { font-size:0.52rem; border-radius:2px; padding:0 2px; line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:1px; }
+  .cal-evt.교육 { background:#0ea5e9; color:white; }
+  .cal-evt.점검 { background:#f97316; color:white; }
+  .cal-evt.회의 { background:#8b5cf6; color:white; }
+  .cal-evt.훈련 { background:#ef4444; color:white; }
+  .cal-evt.검진 { background:#10b981; color:white; }
+  .evt-list-item { display:flex; align-items:center; gap:0.5rem; padding:0.35rem 0; border-bottom:1px solid rgba(30,58,95,0.3); font-size:0.72rem; }
+  .evt-list-item:last-child { border-bottom:none; }
+  .evt-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -219,106 +261,307 @@
 
 <!-- ============ 전체 현황 ============ -->
 <div class="page active" id="page-overview">
-  <div class="kpi-grid">
-    <div class="kpi-card blue"><div class="kpi-label">관리 센터 수</div><div class="kpi-value">20</div><div class="kpi-sub">전국 물류·시공 센터</div><div class="kpi-icon">🏭</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">전체 임직원</div><div class="kpi-value">~376</div><div class="kpi-sub">도급 포함 (25.12 기준)</div><div class="kpi-icon">👥</div></div>
-    <div class="kpi-card green"><div class="kpi-label">2026 재해 목표</div><div class="kpi-value">8건</div><div class="kpi-sub">전년대비 53% 감소 목표</div><div class="kpi-icon">🎯</div></div>
-    <div class="kpi-card yellow"><div class="kpi-label">법정 의무 이행</div><div class="kpi-value">100%</div><div class="kpi-sub">2026 목표</div><div class="kpi-icon">📋</div></div>
-    <div class="kpi-card purple"><div class="kpi-label">유해위험요인 발굴</div><div class="kpi-value">300건</div><div class="kpi-sub">2026 연간 목표</div><div class="kpi-icon">🔍</div></div>
-    <div class="kpi-card orange"><div class="kpi-label">안전보건 예산</div><div class="kpi-value">1.57억</div><div class="kpi-sub">157,482,000원 / 2026</div><div class="kpi-icon">💰</div></div>
+
+<!-- ── ROW 1: KPI 6종 ── -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.5rem;">
+
+  <!-- 관리 센터 수 -->
+  <div class="kpi-card blue" style="min-height:100px;">
+    <div class="kpi-label">관리 센터 수</div>
+    <div class="kpi-value">20</div>
+    <div class="kpi-sub">전국 물류·시공 센터</div>
+    <div class="kpi-icon">🏭</div>
   </div>
 
-  <div class="grid-2">
-    <div class="panel">
-      <div class="panel-head"><div class="panel-head-title">🚨 2026 안전보건 핵심 목표</div><span class="tag tag-blue">중처법·산안법</span></div>
-      <div class="panel-body">
-        <div class="alert-item info">
-          <div class="alert-icon">🏆</div>
-          <div><div class="alert-title">중대산업재해 Zero</div><div class="alert-detail">중대재해처벌법 대응 · 법적 관리 기준 충족 유지</div></div>
-        </div>
-        <div class="alert-item info">
-          <div class="alert-icon">📉</div>
-          <div><div class="alert-title">재해율(안전사고) 8건 이하</div><div class="alert-detail">2025년 17건 → 2026년 8건 (53% 감소)</div></div>
-        </div>
-        <div class="alert-item info">
-          <div class="alert-icon">✅</div>
-          <div><div class="alert-title">법정 의무 이행률 100%</div><div class="alert-detail">2025년 96% → 2026년 100% 달성</div></div>
-        </div>
-        <div class="alert-item info">
-          <div class="alert-icon">🔍</div>
-          <div><div class="alert-title">유해위험요인 발굴 300건/년</div><div class="alert-detail">안전보건협의체 확대 · 상시 위험성평가 (평균 80점 이상)</div></div>
-        </div>
-        <div class="alert-item info">
-          <div class="alert-icon">🏭</div>
-          <div><div class="alert-title">센터별 안전수준 등급화 완성</div><div class="alert-detail">전 센터 "보통 이상" · 내부평가 지표 개발 기획 운영</div></div>
+  <!-- ① 총 인원 도넛 카드 -->
+  <div class="kpi-card blue" style="padding:1rem 1.2rem 0.8rem;">
+    <div class="kpi-label">총 인원 <span style="color:var(--text-dim);font-weight:400;font-size:0.65rem;">(26년 2월 기준)</span></div>
+    <div style="display:flex;align-items:center;gap:0.8rem;margin-top:0.3rem;">
+      <canvas id="donutEmp" width="70" height="70"></canvas>
+      <div style="flex:1;">
+        <div class="kpi-value" style="font-size:1.6rem;" id="empTotal">376명</div>
+        <div style="margin-top:0.4rem;display:flex;flex-direction:column;gap:0.2rem;" id="empLegend">
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.68rem;"><span style="width:8px;height:8px;border-radius:2px;background:#38bdf8;display:inline-block;"></span>바로스 <span id="empBaros" style="color:var(--text);font-weight:700;margin-left:auto;">--명</span></div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.68rem;"><span style="width:8px;height:8px;border-radius:2px;background:#f97316;display:inline-block;"></span>도급사 <span id="empContractor" style="color:var(--text);font-weight:700;margin-left:auto;">--명</span></div>
+          <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.68rem;"><span style="width:8px;height:8px;border-radius:2px;background:#8b5cf6;display:inline-block;"></span>시공협력사 <span id="empConstruction" style="color:var(--text);font-weight:700;margin-left:auto;">--명</span></div>
         </div>
       </div>
     </div>
+    <button onclick="openModal('modalEmp')" style="margin-top:0.6rem;width:100%;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);color:var(--accent2);border-radius:5px;padding:0.28rem;font-size:0.68rem;cursor:pointer;">✏️ 인원 수정</button>
+  </div>
 
-    <div class="panel">
-      <div class="panel-head"><div class="panel-head-title">📅 2026년 주요 정기 일정</div><span class="tag tag-green">연간 계획</span></div>
-      <div class="panel-body">
-        <div class="event-item">
-          <div class="event-date-box"><div class="event-day">매월</div><div class="event-month">MONTHLY</div></div>
-          <div class="event-info"><div class="event-title">안전보건순회점검 · 도급협의체 · 정기 안전보건교육</div><div class="event-sub">안전관리 정기점검 보고서 (2회/월)</div></div>
-          <span class="tag tag-blue">정기</span>
+  <!-- ② 재해 목표 KPI -->
+  <div class="kpi-card green" style="padding:1rem 1.2rem 0.8rem;">
+    <div class="kpi-label">재해 목표 관리 <span style="color:var(--text-dim);font-weight:400;font-size:0.65rem;">(26년 2월 기준)</span></div>
+    <div style="display:flex;align-items:baseline;gap:0.5rem;margin-top:0.3rem;">
+      <div class="kpi-value" style="font-size:1.5rem;color:var(--green);">목표 <span id="accTarget">8건</span></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-top:0.4rem;">
+      <span style="color:var(--text-dim);">현재 발생</span><span id="accCurrent" style="color:var(--red);font-weight:700;">3건</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-top:0.2rem;">
+      <span style="color:var(--text-dim);">달성률 (목표 대비 소진)</span><span id="accRate" style="font-weight:700;color:var(--yellow);">37.5%</span>
+    </div>
+    <div class="prog-bar" style="margin-top:0.5rem;height:7px;"><div id="accBar" class="prog-fill prog-yellow" style="width:37.5%"></div></div>
+    <button onclick="openModal('modalAcc')" style="margin-top:0.6rem;width:100%;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--green);border-radius:5px;padding:0.28rem;font-size:0.68rem;cursor:pointer;">✏️ 재해 현황 수정</button>
+  </div>
+
+  <!-- ③ 유해위험요인 발굴 -->
+  <div class="kpi-card purple" style="padding:1rem 1.2rem 0.8rem;">
+    <div class="kpi-label">유해위험요인 발굴 <span style="color:var(--text-dim);font-weight:400;font-size:0.65rem;">(연간 목표 300건)</span></div>
+    <div style="display:flex;align-items:baseline;gap:0.4rem;margin-top:0.3rem;">
+      <div class="kpi-value" style="font-size:1.5rem;color:var(--purple);" id="hazardCurrent">0건</div>
+      <span style="color:var(--text-dim);font-size:0.75rem;">/ 300건</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-top:0.3rem;">
+      <span style="color:var(--text-dim);">달성률</span><span id="hazardRate" style="font-weight:700;color:var(--purple);">0%</span>
+    </div>
+    <div class="prog-bar" style="margin-top:0.5rem;height:7px;"><div id="hazardBar" class="prog-fill" style="width:0%;background:var(--purple);"></div></div>
+    <button onclick="openModal('modalHazard')" style="margin-top:0.6rem;width:100%;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);color:var(--purple);border-radius:5px;padding:0.28rem;font-size:0.68rem;cursor:pointer;">+ 위험요인 등록</button>
+  </div>
+
+  <!-- ④ 예산 집행 -->
+  <div class="kpi-card orange" style="padding:1rem 1.2rem 0.8rem;">
+    <div class="kpi-label">안전보건 예산 집행 <span style="color:var(--text-dim);font-weight:400;font-size:0.65rem;">(2026년)</span></div>
+    <div style="display:flex;align-items:baseline;gap:0.4rem;margin-top:0.3rem;">
+      <div class="kpi-value" style="font-size:1.3rem;color:var(--orange);">1.57억</div>
+      <span style="color:var(--text-dim);font-size:0.7rem;">총예산</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-top:0.3rem;">
+      <span style="color:var(--text-dim);">집행</span><span id="budgetUsed" style="color:var(--yellow);font-weight:700;">0원</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-top:0.15rem;">
+      <span style="color:var(--text-dim);">집행률</span><span id="budgetRate" style="color:var(--orange);font-weight:700;">0%</span>
+    </div>
+    <div class="prog-bar" style="margin-top:0.5rem;height:7px;"><div id="budgetBar" class="prog-fill prog-yellow" style="width:0%"></div></div>
+    <button onclick="openModal('modalBudget')" style="margin-top:0.6rem;width:100%;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:var(--orange);border-radius:5px;padding:0.28rem;font-size:0.68rem;cursor:pointer;">+ 예산 집행 등록</button>
+  </div>
+
+  <!-- 법정 의무 -->
+  <div class="kpi-card yellow" style="min-height:100px;">
+    <div class="kpi-label">법정 의무 이행</div>
+    <div class="kpi-value">100%</div>
+    <div class="kpi-sub">2026 목표</div>
+    <div class="kpi-icon">📋</div>
+  </div>
+
+</div><!-- /KPI ROW -->
+
+<!-- ── ROW 2: 핵심목표 + 캘린더 ── -->
+<div class="grid-2">
+
+  <!-- ⑤ 안전보건 핵심 목표 카드형 -->
+  <div class="panel">
+    <div class="panel-head"><div class="panel-head-title">🎯 2026 안전보건 핵심 목표</div><span class="tag tag-red">중처법·산안법</span></div>
+    <div class="panel-body" style="padding:0.8rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;">
+
+        <div style="background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.9rem;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.4rem;">🛡️</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--red);margin-bottom:0.3rem;">중대산업재해 ZERO</div>
+          <div style="font-size:0.65rem;color:var(--text-dim);line-height:1.5;">중대재해처벌법 대응<br>법적 관리 기준 유지</div>
         </div>
-        <div class="event-item">
-          <div class="event-date-box"><div class="event-day">분기</div><div class="event-month">QUARTER</div></div>
-          <div class="event-info"><div class="event-title">산업안전보건위원회 · 노사협의회 · 합동순회점검</div><div class="event-sub">안전보건 설문(직원청취) · 위험성평가 결과보고</div></div>
-          <span class="tag tag-purple">회의</span>
+
+        <div style="background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:0.9rem;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.4rem;">📉</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--yellow);margin-bottom:0.3rem;">재해율 감소</div>
+          <div style="font-size:0.65rem;color:var(--text-dim);line-height:1.5;">17건 → 8건 목표<br>53% 감소 달성</div>
         </div>
-        <div class="event-item">
-          <div class="event-date-box"><div class="event-day">반기</div><div class="event-month">SEMI-AN</div></div>
-          <div class="event-info"><div class="event-title">도급사 안전보건 수준평가 · 이행상태 점검 · MSDS 실사</div><div class="event-sub">관리감독자 활동평가 · 예산 이행률 점검</div></div>
-          <span class="tag tag-yellow">반기</span>
+
+        <div style="background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.9rem;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.4rem;">✅</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--green);margin-bottom:0.3rem;">법정 의무 100%</div>
+          <div style="font-size:0.65rem;color:var(--text-dim);line-height:1.5;">96% → 100% 달성<br>산안법·중처법 준수</div>
         </div>
-        <div class="event-item">
-          <div class="event-date-box"><div class="event-day">연간</div><div class="event-month">ANNUAL</div></div>
-          <div class="event-info"><div class="event-title">정기 건강검진 · 위험성평가 · 비상대피훈련 · 근골격계조사</div><div class="event-sub">관리감독자 교육(16h) · CPR교육 · 독감예방접종</div></div>
-          <span class="tag tag-green">연간</span>
+
+        <div style="background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(139,92,246,0.05));border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:0.9rem;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:0.4rem;">🔍</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--purple);margin-bottom:0.3rem;">위험요인 300건 발굴</div>
+          <div style="font-size:0.65rem;color:var(--text-dim);line-height:1.5;">상시 위험성평가<br>평균 80점 이상</div>
         </div>
+
+        <div style="background:linear-gradient(135deg,rgba(14,165,233,0.15),rgba(14,165,233,0.05));border:1px solid rgba(14,165,233,0.3);border-radius:10px;padding:0.9rem;text-align:center;grid-column:1/-1;">
+          <div style="font-size:2rem;margin-bottom:0.4rem;">🏭</div>
+          <div style="font-size:0.8rem;font-weight:700;color:var(--accent2);margin-bottom:0.3rem;">센터별 안전수준 등급화</div>
+          <div style="font-size:0.65rem;color:var(--text-dim);line-height:1.5;">전 센터 "보통 이상" 달성 · 내부평가 지표 개발 · A등급 이상(평균 80점) 목표</div>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <!-- 안전보건 조직 -->
-  <div class="panel grid-full">
-    <div class="panel-head"><div class="panel-head-title">🏛️ 2026년 안전보건 조직 체계</div><span class="tag tag-blue">바로스(LETUS)</span></div>
-    <div class="panel-body">
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem;">
-        <div style="background:var(--surface2); border-radius:8px; padding:0.8rem; border:1px solid var(--border);">
-          <div style="font-size:0.65rem; color:var(--accent2); font-weight:700; margin-bottom:0.5rem;">🏆 안전보건관리 총괄책임자</div>
-          <div style="font-size:0.82rem; font-weight:700;">박성진 대표이사</div>
-          <div style="font-size:0.68rem; color:var(--text-dim); margin-top:0.3rem;">중대재해처벌법 의무이행 총괄</div>
-        </div>
-        <div style="background:var(--surface2); border-radius:8px; padding:0.8rem; border:1px solid var(--border);">
-          <div style="font-size:0.65rem; color:var(--green); font-weight:700; margin-bottom:0.5rem;">🛡️ 안전보건팀장</div>
-          <div style="font-size:0.82rem; font-weight:700;">조신혜</div>
-          <div style="font-size:0.68rem; color:var(--text-dim); margin-top:0.3rem;">안전보건 업무 기획·추진 총괄</div>
-        </div>
-        <div style="background:var(--surface2); border-radius:8px; padding:0.8rem; border:1px solid var(--border);">
-          <div style="font-size:0.65rem; color:var(--yellow); font-weight:700; margin-bottom:0.5rem;">⚙️ 안전관리자 (대행)</div>
-          <div style="font-size:0.82rem; font-weight:700;">대한산업안전협회</div>
-          <div style="font-size:0.68rem; color:var(--text-dim); margin-top:0.3rem;">안전담당: 김성환</div>
-        </div>
-        <div style="background:var(--surface2); border-radius:8px; padding:0.8rem; border:1px solid var(--border);">
-          <div style="font-size:0.65rem; color:var(--purple); font-weight:700; margin-bottom:0.5rem;">🏥 보건관리자 (대행)</div>
-          <div style="font-size:0.82rem; font-weight:700;">대한산업보건협회</div>
-          <div style="font-size:0.68rem; color:var(--text-dim); margin-top:0.3rem;">보건담당: 박해리</div>
+  <!-- ⑥ 캘린더 -->
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-head-title">📅 안전보건 일정 관리</div>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <button onclick="calPrev()" style="background:var(--surface3);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.2rem 0.5rem;cursor:pointer;font-size:0.75rem;">◀</button>
+        <span id="calTitle" style="font-size:0.78rem;font-weight:700;min-width:90px;text-align:center;"></span>
+        <button onclick="calNext()" style="background:var(--surface3);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.2rem 0.5rem;cursor:pointer;font-size:0.75rem;">▶</button>
+        <button onclick="openModal('modalSchedule')" style="background:rgba(14,165,233,0.15);border:1px solid rgba(14,165,233,0.3);color:var(--accent2);border-radius:5px;padding:0.25rem 0.6rem;cursor:pointer;font-size:0.68rem;">+ 일정 등록</button>
+      </div>
+    </div>
+    <div class="panel-body" style="padding:0.7rem;">
+      <!-- 캘린더 헤더 -->
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;">
+        <div style="text-align:center;font-size:0.62rem;color:var(--red);font-weight:700;padding:0.2rem;">일</div>
+        <div style="text-align:center;font-size:0.62rem;color:var(--text-dim);font-weight:700;padding:0.2rem;">월</div>
+        <div style="text-align:center;font-size:0.62rem;color:var(--text-dim);font-weight:700;padding:0.2rem;">화</div>
+        <div style="text-align:center;font-size:0.62rem;color:var(--text-dim);font-weight:700;padding:0.2rem;">수</div>
+        <div style="text-align:center;font-size:0.62rem;color:var(--text-dim);font-weight:700;padding:0.2rem;">목</div>
+        <div style="text-align:center;font-size:0.62rem;color:var(--text-dim);font-weight:700;padding:0.2rem;">금</div>
+        <div style="text-align:center;font-size:0.62rem;color:var(--accent);font-weight:700;padding:0.2rem;">토</div>
+      </div>
+      <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;"></div>
+      <!-- 일정 범례 -->
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.6rem;padding-top:0.5rem;border-top:1px solid var(--border);">
+        <span style="font-size:0.62rem;display:flex;align-items:center;gap:0.2rem;"><span style="width:8px;height:8px;border-radius:2px;background:#0ea5e9;display:inline-block;"></span>교육</span>
+        <span style="font-size:0.62rem;display:flex;align-items:center;gap:0.2rem;"><span style="width:8px;height:8px;border-radius:2px;background:#f97316;display:inline-block;"></span>점검</span>
+        <span style="font-size:0.62rem;display:flex;align-items:center;gap:0.2rem;"><span style="width:8px;height:8px;border-radius:2px;background:#8b5cf6;display:inline-block;"></span>회의</span>
+        <span style="font-size:0.62rem;display:flex;align-items:center;gap:0.2rem;"><span style="width:8px;height:8px;border-radius:2px;background:#ef4444;display:inline-block;"></span>훈련</span>
+        <span style="font-size:0.62rem;display:flex;align-items:center;gap:0.2rem;"><span style="width:8px;height:8px;border-radius:2px;background:#10b981;display:inline-block;"></span>검진</span>
+      </div>
+      <!-- 이번달 일정 목록 -->
+      <div id="calEventList" style="margin-top:0.6rem;max-height:120px;overflow-y:auto;"></div>
+    </div>
+  </div>
+
+</div><!-- /ROW 2 -->
+
+<!-- ── ROW 3: 조직체계 ── -->
+<div class="panel grid-full">
+  <div class="panel-head"><div class="panel-head-title">🏛️ 2026년 안전보건 조직 체계</div><span class="tag tag-blue">LETUS (바로스)</span></div>
+  <div class="panel-body">
+    <!-- 조직도 SVG 형태 -->
+    <div style="overflow-x:auto;">
+    <div style="min-width:700px;padding:0.5rem 0;">
+
+      <!-- 레벨 1: 총괄책임자 -->
+      <div style="display:flex;justify-content:center;margin-bottom:0;">
+        <div class="org-node org-top" data-tooltip="tooltip-ceo">
+          <div class="org-icon">👑</div>
+          <div class="org-name">박성진</div>
+          <div class="org-pos">안전보건관리 총괄책임자 (대표이사)</div>
         </div>
       </div>
-      <div style="margin-top:1rem;">
-        <div style="font-size:0.7rem; color:var(--text-dim); margin-bottom:0.5rem; font-weight:600;">📍 관리감독자</div>
-        <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
-          <span class="tag tag-blue">강현민</span><span class="tag tag-blue">김기호</span><span class="tag tag-blue">이범준</span><span class="tag tag-blue">이상율</span><span class="tag tag-blue">이희용</span>
-          <span class="tag tag-blue">손으뜸</span><span class="tag tag-blue">강효훈</span><span class="tag tag-blue">이문승</span><span class="tag tag-blue">박진우</span><span class="tag tag-blue">오춘성</span>
-          <span class="tag tag-blue">강태훈</span><span class="tag tag-blue">전정원</span>
+      <div style="display:flex;justify-content:center;"><div style="width:2px;height:24px;background:var(--border);"></div></div>
+
+      <!-- 레벨 2: 팀장 + 안전 + 보건 -->
+      <div style="display:flex;justify-content:center;gap:0;position:relative;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:62%;height:2px;background:var(--border);"></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:0;">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div style="width:2px;height:24px;background:var(--border);"></div>
+          <div class="org-node org-mgr" style="border-color:rgba(16,185,129,0.5);">
+            <div class="org-icon" style="color:var(--green);">🛡️</div>
+            <div class="org-name">조신혜</div>
+            <div class="org-pos" style="color:var(--green);">안전보건팀장</div>
+            <div class="org-duties">· 안전보건 업무 기획·추진<br>· 전사 위험성평가 운영<br>· 안전·보건 담당자 조율</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div style="width:2px;height:24px;background:var(--border);"></div>
+          <div class="org-node org-mgr" style="border-color:rgba(245,158,11,0.5);">
+            <div class="org-icon" style="color:var(--yellow);">⚙️</div>
+            <div class="org-name">대한산업안전협회</div>
+            <div class="org-pos" style="color:var(--yellow);">안전관리자 (대행)</div>
+            <div class="org-duties">담당: 김성환<br>· 위험성평가 보좌·조언<br>· 산재발생 원인조사·재발방지<br>· 관리감독자 활동 지도·지원</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div style="width:2px;height:24px;background:var(--border);"></div>
+          <div class="org-node org-mgr" style="border-color:rgba(139,92,246,0.5);">
+            <div class="org-icon" style="color:var(--purple);">🏥</div>
+            <div class="org-name">대한산업보건협회</div>
+            <div class="org-pos" style="color:var(--purple);">보건관리자 (대행)</div>
+            <div class="org-duties">담당: 박해리<br>· 건강검진 결과분석·사후관리<br>· 근골격계·직무스트레스 예방<br>· 건강상담 및 보건교육</div>
+          </div>
         </div>
       </div>
+
+      <!-- 연결선 레벨 2→3 -->
+      <div style="display:flex;justify-content:center;"><div style="width:2px;height:24px;background:var(--border);"></div></div>
+
+      <!-- 레벨 3: 안전담당자 -->
+      <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:0;">
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="org-node org-staff" style="border-color:rgba(14,165,233,0.4);">
+            <div class="org-icon" style="color:var(--accent2);font-size:1.1rem;">👤</div>
+            <div class="org-name" style="font-size:0.78rem;">김성환</div>
+            <div class="org-pos" style="color:var(--accent2);">안전담당자</div>
+            <div class="org-duties">· 전사 안전·보건 실무 이행<br>· 안전보건 교육 실시<br>· 현장 의견수렴 및 개선요청<br>· 사고·위험 발생 즉시 보고</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <div class="org-node org-staff" style="border-color:rgba(139,92,246,0.4);">
+            <div class="org-icon" style="color:var(--purple);font-size:1.1rem;">👤</div>
+            <div class="org-name" style="font-size:0.78rem;">박해리</div>
+            <div class="org-pos" style="color:var(--purple);">보건담당자</div>
+            <div class="org-duties">· 건강검진 계획·실시<br>· 근골격계 유해요인 관리<br>· 직업병 예방 상담<br>· 보건 기록 관리</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 연결선 레벨 3→4 -->
+      <div style="display:flex;justify-content:center;"><div style="width:2px;height:24px;background:var(--border);"></div></div>
+      <div style="display:flex;justify-content:center;margin-bottom:0;">
+        <div style="width:80%;height:2px;background:var(--border);"></div>
+      </div>
+
+      <!-- 레벨 4: 관리감독자 -->
+      <div style="margin-top:0;">
+        <div style="display:flex;justify-content:center;gap:0.5rem;flex-wrap:wrap;margin-top:0;">
+          <div style="width:2px;height:20px;background:var(--border);position:absolute;"></div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1rem;margin-top:8px;">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--accent2);margin-bottom:0.5rem;text-align:center;">👷 관리감독자 (현장 실무·근로자 직접 지휘·감독)</div>
+          <div style="font-size:0.63rem;color:var(--text-dim);text-align:center;margin-bottom:0.6rem;">작업 전 위험요인 확인 · 근로자 안전수칙 준수 여부 관리 · 사고·위험 즉시 보고 · 신규·변경 작업 위험성 확인</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;justify-content:center;">
+            <span class="tag tag-blue">강현민 (팀장)</span><span class="tag tag-blue">김기호 (팀장)</span><span class="tag tag-blue">이범준 (총괄팀장)</span>
+            <span class="tag tag-blue">이상율 (팀장)</span><span class="tag tag-blue">이희용 (팀장)</span><span class="tag tag-blue">손으뜸</span>
+            <span class="tag tag-blue">강효훈</span><span class="tag tag-blue">이문승</span><span class="tag tag-blue">박진우</span>
+            <span class="tag tag-blue">오춘성</span><span class="tag tag-blue">강태훈</span><span class="tag tag-blue">전정원</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    </div><!-- /min-width -->
+  </div>
+</div>
+
+<!-- 위험요인 등록 목록 -->
+<div class="panel grid-full" style="margin-top:0;">
+  <div class="panel-head"><div class="panel-head-title">⚠️ 유해위험요인 등록 현황</div><span id="hazardCount" class="tag tag-purple">0건 등록</span></div>
+  <div class="panel-body" style="padding:0;">
+    <div style="overflow-x:auto;">
+    <table class="tbl">
+      <thead><tr><th>NO</th><th>센터</th><th>위험요인 내용</th><th>발견일</th><th>조치상태</th><th>등록자</th></tr></thead>
+      <tbody id="hazardTableBody">
+        <tr><td colspan="6" class="empty-note">등록된 위험요인이 없습니다. '+ 위험요인 등록' 버튼을 이용하세요.</td></tr>
+      </tbody>
+    </table>
     </div>
   </div>
 </div>
+
+<!-- 예산 집행 내역 -->
+<div class="panel grid-full" style="margin-top:0;">
+  <div class="panel-head"><div class="panel-head-title">💰 예산 집행 내역</div><span class="tag tag-orange">총예산 157,482,000원</span></div>
+  <div class="panel-body" style="padding:0;">
+    <div style="overflow-x:auto;">
+    <table class="tbl">
+      <thead><tr><th>NO</th><th>항목</th><th>집행금액</th><th>집행일</th><th>센터</th><th>관련 URL</th></tr></thead>
+      <tbody id="budgetTableBody">
+        <tr><td colspan="6" class="empty-note">등록된 예산 집행 내역이 없습니다. '+ 예산 집행 등록' 버튼을 이용하세요.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /page-overview -->
 
 <!-- ============ 센터별 현황 ============ -->
 <div class="page" id="page-centers">
@@ -869,15 +1112,254 @@
 </main>
 
 <script>
-  document.getElementById('currentDate').textContent =
-    new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+// 날짜
+document.getElementById('currentDate').textContent =
+  new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
 
-  function showPage(name, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    el.classList.add('active');
+// 탭 전환
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  el.classList.add('active');
+}
+
+// 모달
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// 데이터
+var data = {
+  emp: { baros: 0, contractor: 0, construction: 0 },
+  acc: { target: 8, current: 3 },
+  hazards: [],
+  budget: [],
+  schedules: [
+    { title:'정기 안전보건교육', date:'2026-03-15', type:'교육', center:'전 센터', manager:'김성환' },
+    { title:'산업안전보건위원회', date:'2026-03-25', type:'회의', center:'전 센터', manager:'조신혜' },
+    { title:'합동순회점검', date:'2026-03-20', type:'점검', center:'양지센터', manager:'김성환' },
+    { title:'지게차 특별안전교육', date:'2026-03-18', type:'교육', center:'양지센터', manager:'김성환' }
+  ]
+};
+
+// 도넛 차트
+function drawDonut() {
+  var c = document.getElementById('donutEmp');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var total = data.emp.baros + data.emp.contractor + data.emp.construction;
+  var segs = total > 0
+    ? [{v:data.emp.baros,color:'#38bdf8'},{v:data.emp.contractor,color:'#f97316'},{v:data.emp.construction,color:'#8b5cf6'}]
+    : [{v:1,color:'#1e3a5f'}];
+  var sum = segs.reduce(function(a,s){return a+s.v;},0);
+  var start = -Math.PI/2;
+  ctx.clearRect(0,0,70,70);
+  segs.forEach(function(s){
+    var angle = (s.v/sum)*Math.PI*2;
+    ctx.beginPath(); ctx.moveTo(35,35);
+    ctx.arc(35,35,32,start,start+angle);
+    ctx.closePath(); ctx.fillStyle=s.color; ctx.fill();
+    start += angle;
+  });
+  ctx.beginPath(); ctx.arc(35,35,20,0,Math.PI*2);
+  ctx.fillStyle='#111827'; ctx.fill();
+  if(total>0){
+    document.getElementById('empTotal').textContent = total+'명';
+    document.getElementById('empBaros').textContent = data.emp.baros+'명';
+    document.getElementById('empContractor').textContent = data.emp.contractor+'명';
+    document.getElementById('empConstruction').textContent = data.emp.construction+'명';
   }
+}
+
+// 재해 KPI
+function updateAccKPI() {
+  var t = data.acc.target, c = data.acc.current;
+  var rate = Math.round((c/t)*100);
+  document.getElementById('accTarget').textContent = t+'건';
+  document.getElementById('accCurrent').textContent = c+'건';
+  document.getElementById('accRate').textContent = rate+'%';
+  var bar = document.getElementById('accBar');
+  bar.style.width = Math.min(rate,100)+'%';
+  var col = rate<50?'prog-green':rate<80?'prog-yellow':'prog-red';
+  bar.className = 'prog-fill ' + col;
+  document.getElementById('accRate').style.color = rate<50?'var(--green)':rate<80?'var(--yellow)':'var(--red)';
+}
+
+// 위험요인
+function updateHazardKPI() {
+  var cnt = data.hazards.length;
+  var rate = Math.round((cnt/300)*100);
+  document.getElementById('hazardCurrent').textContent = cnt+'건';
+  document.getElementById('hazardRate').textContent = rate+'%';
+  document.getElementById('hazardBar').style.width = Math.min(rate,100)+'%';
+  document.getElementById('hazardCount').textContent = cnt+'건 등록';
+  renderHazardTable();
+}
+
+function renderHazardTable() {
+  var tbody = document.getElementById('hazardTableBody');
+  if(data.hazards.length===0){
+    tbody.innerHTML='<tr><td colspan="6" class="empty-note">등록된 위험요인이 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.hazards.map(function(h,i){
+    var badgeCls = h.status==='조치완료'?'ok':h.status==='조치중'?'warn':'danger';
+    return '<tr><td>'+(i+1)+'</td><td class="center-name">'+h.center+'</td>'+
+      '<td style="max-width:220px;white-space:normal;font-size:0.74rem;">'+h.desc+'</td>'+
+      '<td>'+h.date+'</td><td><span class="badge '+badgeCls+'">'+h.status+'</span></td><td>'+h.reg+'</td></tr>';
+  }).join('');
+}
+
+// 예산
+function updateBudgetKPI() {
+  var total = 157482000;
+  var used = data.budget.reduce(function(s,b){return s+b.amount;},0);
+  var rate = Math.round((used/total)*100);
+  document.getElementById('budgetUsed').textContent = used.toLocaleString()+'원';
+  document.getElementById('budgetRate').textContent = rate+'%';
+  document.getElementById('budgetBar').style.width = Math.min(rate,100)+'%';
+  renderBudgetTable();
+}
+
+function renderBudgetTable() {
+  var tbody = document.getElementById('budgetTableBody');
+  if(data.budget.length===0){
+    tbody.innerHTML='<tr><td colspan="6" class="empty-note">등록된 예산 집행 내역이 없습니다.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.budget.map(function(b,i){
+    var urlHtml = b.url ? '<a href="'+b.url+'" target="_blank" style="color:var(--accent2);font-size:0.7rem;">🔗 링크</a>' : '-';
+    return '<tr><td>'+(i+1)+'</td><td>'+b.item+'</td>'+
+      '<td style="font-weight:700;color:var(--yellow);">'+b.amount.toLocaleString()+'원</td>'+
+      '<td>'+b.date+'</td><td>'+b.center+'</td><td>'+urlHtml+'</td></tr>';
+  }).join('');
+}
+
+// 저장 함수들
+function saveEmp() {
+  data.emp.baros = parseInt(document.getElementById('inBaros').value)||0;
+  data.emp.contractor = parseInt(document.getElementById('inContractor').value)||0;
+  data.emp.construction = parseInt(document.getElementById('inConstruction').value)||0;
+  drawDonut(); closeModal('modalEmp');
+}
+function saveAcc() {
+  data.acc.target = parseInt(document.getElementById('inAccTarget').value)||8;
+  data.acc.current = parseInt(document.getElementById('inAccCurrent').value)||0;
+  updateAccKPI(); closeModal('modalAcc');
+}
+function saveHazard() {
+  var desc = document.getElementById('inHDesc').value.trim();
+  if(!desc){alert('위험요인 내용을 입력하세요.'); return;}
+  data.hazards.push({
+    center: document.getElementById('inHCenter').value,
+    desc: desc,
+    date: document.getElementById('inHDate').value,
+    status: document.getElementById('inHStatus').value,
+    reg: document.getElementById('inHReg').value||'미입력'
+  });
+  document.getElementById('inHDesc').value='';
+  updateHazardKPI(); closeModal('modalHazard');
+}
+function saveBudget() {
+  var item = document.getElementById('inBItem').value.trim();
+  var amount = parseInt(document.getElementById('inBAmount').value)||0;
+  if(!item||!amount){alert('항목명과 집행금액을 입력하세요.'); return;}
+  data.budget.push({
+    item: item, amount: amount,
+    date: document.getElementById('inBDate').value,
+    center: document.getElementById('inBCenter').value,
+    url: document.getElementById('inBUrl').value.trim()
+  });
+  document.getElementById('inBItem').value='';
+  document.getElementById('inBAmount').value='';
+  document.getElementById('inBUrl').value='';
+  updateBudgetKPI(); closeModal('modalBudget');
+}
+function saveSchedule() {
+  var title = document.getElementById('inSTitle').value.trim();
+  var date = document.getElementById('inSDate').value;
+  if(!title||!date){alert('일정명과 일자를 입력하세요.'); return;}
+  data.schedules.push({
+    title: title, date: date,
+    type: document.getElementById('inSType').value,
+    center: document.getElementById('inSCenter').value,
+    manager: document.getElementById('inSManager').value
+  });
+  document.getElementById('inSTitle').value='';
+  renderCalendar(); closeModal('modalSchedule');
+}
+
+// 캘린더
+var calYear = new Date().getFullYear();
+var calMonth = new Date().getMonth();
+var calColors = {교육:'#0ea5e9',점검:'#f97316',회의:'#8b5cf6',훈련:'#ef4444',검진:'#10b981'};
+
+function renderCalendar() {
+  var months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  document.getElementById('calTitle').textContent = calYear+'년 '+months[calMonth];
+  var grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  var today = new Date();
+  var firstDay = new Date(calYear,calMonth,1).getDay();
+  var daysInMonth = new Date(calYear,calMonth+1,0).getDate();
+  var daysInPrev = new Date(calYear,calMonth,0).getDate();
+  for(var i=0;i<42;i++){
+    var cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    var day, isCurrentMonth = true;
+    if(i<firstDay){ day=daysInPrev-firstDay+i+1; isCurrentMonth=false; }
+    else if(i>=firstDay+daysInMonth){ day=i-firstDay-daysInMonth+1; isCurrentMonth=false; }
+    else { day=i-firstDay+1; }
+    if(!isCurrentMonth) cell.classList.add('other-month');
+    if(isCurrentMonth && day===today.getDate() && calMonth===today.getMonth() && calYear===today.getFullYear())
+      cell.classList.add('today');
+    var dayEl = document.createElement('div');
+    dayEl.className = 'cal-day';
+    dayEl.style.color = i%7===0?'var(--red)':i%7===6?'var(--accent)':'var(--text-mid)';
+    dayEl.textContent = day;
+    cell.appendChild(dayEl);
+    if(isCurrentMonth){
+      var dateStr = calYear+'-'+(String(calMonth+1).padStart(2,'0'))+'-'+(String(day).padStart(2,'0'));
+      var evts = data.schedules.filter(function(s){return s.date===dateStr;});
+      evts.slice(0,2).forEach(function(s){
+        var e = document.createElement('div');
+        e.className = 'cal-evt '+s.type;
+        e.textContent = s.title;
+        cell.appendChild(e);
+      });
+    }
+    grid.appendChild(cell);
+  }
+  var yStr = String(calYear)+'-'+String(calMonth+1).padStart(2,'0');
+  var monthEvts = data.schedules.filter(function(s){return s.date.startsWith(yStr);}).sort(function(a,b){return a.date.localeCompare(b.date);});
+  var listEl = document.getElementById('calEventList');
+  if(monthEvts.length===0){
+    listEl.innerHTML='<div style="color:var(--text-dim);font-size:0.7rem;text-align:center;padding:0.5rem;">일정이 없습니다.</div>';
+  } else {
+    listEl.innerHTML = monthEvts.map(function(s){
+      return '<div class="evt-list-item">'+
+        '<div class="evt-dot" style="background:'+(calColors[s.type]||'#64748b')+';"></div>'+
+        '<span style="color:var(--text-dim);min-width:45px;">'+s.date.slice(5)+'</span>'+
+        '<span style="flex:1;">'+s.title+'</span>'+
+        '<span style="color:var(--text-dim);font-size:0.65rem;">'+(s.center||'')+'</span>'+
+        '</div>';
+    }).join('');
+  }
+}
+function calPrev(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function calNext(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+
+// 모달 닫기
+document.addEventListener('click', function(e){
+  if(e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
+});
+
+// 초기 실행
+drawDonut();
+updateAccKPI();
+updateHazardKPI();
+updateBudgetKPI();
+renderCalendar();
 </script>
 </body>
 </html>
